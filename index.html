@@ -120,7 +120,6 @@ body{
 }
 .welcome-logo{width:100%; max-width:260px; margin:0 auto}
 .welcome-logo svg{display:block; width:100%; height:auto}
-.welcome-eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted)}
 .welcome-tagline{color:var(--muted); font-size:14px; font-family:"Jua",sans-serif}
 
 .diff-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%}
@@ -455,7 +454,6 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
 
     <div class="welcome-card">
       <div class="welcome-icon-wrap"><span class="welcome-icon" role="img" aria-label="pineapple">🍍</span></div>
-      <p class="welcome-eyebrow">수열팡 시리즈 2탄</p>
       <h1 class="welcome-logo" aria-label="삼각팡">
         <svg viewBox="0 0 440 170" role="img" aria-hidden="true">
           <defs>
@@ -497,11 +495,11 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
       </div>
 
       <div class="diff-grid">
-        <button class="diff-btn" data-diff="easy" type="button"><b>쉬움</b><span>1사분면 · 육십분법</span><small id="best-easy">최고 0</small></button>
-        <button class="diff-btn" data-diff="normal" type="button"><b>보통</b><span>둔각까지 · 호도법</span><small id="best-normal">최고 0</small></button>
-        <button class="diff-btn" data-diff="hard" type="button"><b>어려움</b><span>전 범위 일반각</span><small id="best-hard">최고 0</small></button>
-        <button class="diff-btn" data-diff="master" type="button"><b>고수</b><span>전 범위 + tan</span><small id="best-master">최고 0</small></button>
-        <button class="diff-btn diff-wide" data-diff="hell" type="button"><b>지옥</b><span>csc · sec · cot 총출동</span><small id="best-hell">최고 0</small></button>
+        <button class="diff-btn" data-diff="easy" type="button"><b>쉬움</b><small id="best-easy">최고 0</small></button>
+        <button class="diff-btn" data-diff="normal" type="button"><b>보통</b><small id="best-normal">최고 0</small></button>
+        <button class="diff-btn" data-diff="hard" type="button"><b>어려움</b><small id="best-hard">최고 0</small></button>
+        <button class="diff-btn" data-diff="master" type="button"><b>고수</b><small id="best-master">최고 0</small></button>
+        <button class="diff-btn diff-wide" data-diff="hell" type="button"><b>지옥</b><small id="best-hell">최고 0</small></button>
       </div>
 
       <button class="swipe-launch" id="swipebtn" type="button">
