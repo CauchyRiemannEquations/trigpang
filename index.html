@@ -36,7 +36,7 @@ body{
 .game-container{
   position:relative; overflow:hidden;
   display:flex; flex-direction:column; align-items:center; gap:10px;
-  min-height:min(640px, calc(100dvh - 24px));
+  min-height:min(700px, calc(100dvh - 24px));
   padding:14px 14px 20px;
   background:var(--forest);
   border:1px solid rgba(255,216,77,.12);
@@ -123,13 +123,27 @@ body{
 .welcome-eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted)}
 .welcome-tagline{color:var(--muted); font-size:14px; font-family:"Jua",sans-serif}
 
-.welcome-best{
-  display:inline-flex; align-items:baseline; gap:6px; margin:0 auto;
-  padding:8px 16px; border-radius:999px;
-  background:rgba(255,216,77,.08); border:1px solid rgba(255,216,77,.24);
-  color:var(--gold); font-family:"Outfit",sans-serif; font-weight:800; font-size:18px;
+.diff-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%}
+.diff-btn{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:12px 8px; border-radius:13px;
+  background:rgba(6,41,31,.72); border:1px solid var(--line); color:var(--text);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  transition:transform .14s ease, border-color .14s ease, background .14s ease;
 }
-.welcome-best-label,.welcome-best-unit{color:var(--muted); font-size:12px; font-weight:600}
+.diff-btn:hover{transform:translateY(-2px); background:rgba(18,74,54,.8)}
+.diff-btn:active{transform:translateY(1px)}
+.diff-btn b{font-size:17px; line-height:1}
+.diff-btn span{font-size:11px; color:var(--muted); font-family:"Jua",sans-serif}
+.diff-btn small{font-size:10px; color:var(--gold-soft); font-family:"Outfit",sans-serif; font-weight:700}
+.diff-btn[data-diff="easy"] b{color:var(--lime)}
+.diff-btn[data-diff="normal"] b{color:var(--gold)}
+.diff-btn[data-diff="hard"] b{color:var(--coral)}
+.diff-btn[data-diff="master"] b{color:#c084fc}
+.diff-btn[data-diff="easy"]:hover{border-color:rgba(148,242,13,.5)}
+.diff-btn[data-diff="normal"]:hover{border-color:rgba(255,216,77,.55)}
+.diff-btn[data-diff="hard"]:hover{border-color:rgba(255,107,107,.55)}
+.diff-btn[data-diff="master"]:hover{border-color:rgba(192,132,252,.55)}
 
 .how-to-play{
   width:100%; padding:12px 14px; text-align:left; border-radius:14px;
@@ -218,7 +232,7 @@ button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   user-select:none;
 }
 .tile .fn{font-family:"STIX Two Text",serif; font-weight:600; font-size:12px; line-height:1}
-.tile .fn.sin{color:#0e7490} .tile .fn.cos{color:#c2410c}
+.tile .fn.sin{color:#0e7490} .tile .fn.cos{color:#c2410c} .tile .fn.tan{color:#7c3aed}
 .tile b{font-family:"STIX Two Text",serif; font-weight:600; font-size:16px; line-height:1.15; letter-spacing:-.01em;
   display:flex; align-items:center; justify-content:center; gap:1px}
 .tile b.num{font-size:17px}
@@ -233,7 +247,7 @@ button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   transform:scale(1.06); z-index:2;
   box-shadow:0 0 0 3px rgba(255,216,77,.25), 0 3px 0 #b97e08;
 }
-.tile.sel .fn.sin{color:#075e6e} .tile.sel .fn.cos{color:#9a3708}
+.tile.sel .fn.sin{color:#075e6e} .tile.sel .fn.cos{color:#9a3708} .tile.sel .fn.tan{color:#5b21b6}
 .tile.pop{transform:scale(0); opacity:0}
 .tile.shake{animation:shk .22s; background:#ffd4d4; border-color:var(--coral)}
 @keyframes shk{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
@@ -398,20 +412,19 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
       </h1>
       <p class="welcome-tagline">값이 같으면 생김새가 달라도 이어져요</p>
 
-      <div class="welcome-best">
-        <span class="welcome-best-label">최고 기록</span>
-        <span id="welcome-best-val">0</span>
-        <span class="welcome-best-unit">점</span>
-      </div>
-
       <div class="how-to-play">
         <div class="htp-title">플레이 방법</div>
         <div class="htp-row"><span class="dot"></span><span><span class="htp-ex">sin 30°</span>, <span class="htp-ex">cos 60°</span>, <span class="htp-ex"><span class="frac"><span>1</span><span>2</span></span></span> — 전부 같은 값, 전부 한 사슬</span></div>
         <div class="htp-row"><span class="dot"></span><span>제한 시간 안에 <span class="htp-highlight">목표 점수</span>를 넘기면 다음 라운드 — 남은 시간은 보너스</span></div>
-        <div class="htp-row"><span class="dot"></span><span>라운드마다 표기가 늘어요: 1사분면 → 호도법 → 둔각 → 전 범위</span></div>
+        <div class="htp-row"><span class="dot"></span><span>라운드가 오를수록 목표 점수 상승 — <span class="htp-highlight">고수</span> 난이도엔 tan까지 등장</span></div>
       </div>
 
-      <button class="btn-start" id="startbtn" type="button">팡 시작!</button>
+      <div class="diff-grid">
+        <button class="diff-btn" data-diff="easy" type="button"><b>쉬움</b><span>1사분면 · 육십분법</span><small id="best-easy">최고 0</small></button>
+        <button class="diff-btn" data-diff="normal" type="button"><b>보통</b><span>둔각까지 · 호도법</span><small id="best-normal">최고 0</small></button>
+        <button class="diff-btn" data-diff="hard" type="button"><b>어려움</b><span>전 범위 일반각</span><small id="best-hard">최고 0</small></button>
+        <button class="diff-btn" data-diff="master" type="button"><b>고수</b><span>전 범위 + tan</span><small id="best-master">최고 0</small></button>
+      </div>
     </div>
   </div>
 
@@ -444,6 +457,8 @@ const $ = id => document.getElementById(id);
 const SINV = {0:'0',30:'1/2',45:'√2/2',60:'√3/2',90:'1',120:'√3/2',135:'√2/2',150:'1/2',180:'0',210:'−1/2',225:'−√2/2',240:'−√3/2',270:'−1',300:'−√3/2',315:'−√2/2',330:'−1/2'};
 const COSV = {0:'1',30:'√3/2',45:'√2/2',60:'1/2',90:'0',120:'−1/2',135:'−√2/2',150:'−√3/2',180:'−1',210:'−√3/2',225:'−√2/2',240:'−1/2',270:'0',300:'1/2',315:'√2/2',330:'√3/2'};
 const RAD = {0:'0',30:'π/6',45:'π/4',60:'π/3',90:'π/2',120:'2π/3',135:'3π/4',150:'5π/6',180:'π',210:'7π/6',225:'5π/4',240:'4π/3',270:'3π/2',300:'5π/3',315:'7π/4',330:'11π/6'};
+/* tan: 90°·270°는 정의되지 않으므로 제외 */
+const TANV = {0:'0',30:'√3/3',45:'1',60:'√3',120:'−√3',135:'−1',150:'−√3/3',180:'0',210:'√3/3',225:'1',240:'√3',300:'−√3',315:'−1',330:'−√3/3'};
 const EXPRS = [];
 for (const d in SINV){
   const deg = +d;
@@ -452,7 +467,13 @@ for (const d in SINV){
   EXPRS.push({fn:'sin', arg:RAD[d], deg, val:SINV[d], rad:true});
   EXPRS.push({fn:'cos', arg:RAD[d], deg, val:COSV[d], rad:true});
 }
-['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1'].forEach(v => EXPRS.push({fn:null, arg:v, deg:null, val:v, rad:false}));
+for (const d in TANV){
+  const deg = +d;
+  EXPRS.push({fn:'tan', arg:d+'°', deg, val:TANV[d], rad:false});
+  EXPRS.push({fn:'tan', arg:RAD[d], deg, val:TANV[d], rad:true});
+}
+['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1','√3/3','√3','−√3/3','−√3']
+  .forEach(v => EXPRS.push({fn:null, arg:v, deg:null, val:v, rad:false}));
 const isNeg = v => v.startsWith('−');
 
 /* a/b 꼴을 세로 분수 마크업으로 변환 (예: 1/2, √3/2, 11π/6, −√2/2) */
@@ -462,36 +483,34 @@ const tileHTML = e => e.fn
   ? `<span class="fn ${e.fn}">${e.fn}</span><b>${fmt(e.arg)}</b>`
   : `<b class="num">${fmt(e.arg)}</b>`;
 
-/* ---------- rounds ---------- */
+/* ---------- 난이도 ---------- */
 const Q1 = [0,30,45,60,90];
 const HALF = [0,30,45,60,90,120,135,150,180];
 const ALLDEG = Object.keys(SINV).map(Number);
-const ROUNDS = [
-  {angles:Q1,   rad:false, target:500,  time:40, intro:'1사분면 · 육십분법', detail:'sin 30° = 1/2 부터 몸풀기'},
-  {angles:Q1,   rad:true,  target:900,  time:40, intro:'호도법 등장', detail:'π/6 = 30° — 같은 각, 다른 표기'},
-  {angles:HALF, rad:true,  target:1300, time:45, intro:'둔각 등장', detail:'cos 120° = −1/2 — 음수 값 주의'},
-  {angles:ALLDEG, rad:true, target:1800, time:45, intro:'전 범위', detail:'3·4사분면까지 — 일반각 총력전'},
-];
+const DIFFS = {
+  easy:   {name:'쉬움',   desc:'1사분면 · 육십분법', angles:Q1,     rad:false, tan:false, time:40, target0:500,  mult:1.3},
+  normal: {name:'보통',   desc:'둔각까지 · 호도법',  angles:HALF,   rad:true,  tan:false, time:45, target0:900,  mult:1.35},
+  hard:   {name:'어려움', desc:'전 범위 일반각',     angles:ALLDEG, rad:true,  tan:false, time:45, target0:1300, mult:1.4},
+  master: {name:'고수',   desc:'전 범위 + tan',      angles:ALLDEG, rad:true,  tan:true,  time:45, target0:1500, mult:1.4},
+};
+let diffKey = 'easy', diff = DIFFS.easy;
 function roundCfg(){
-  if (roundIdx < ROUNDS.length) return ROUNDS[roundIdx];
-  const k = roundIdx - ROUNDS.length + 1;
-  return {angles:ALLDEG, rad:true, time:45,
-    target: Math.round(1800 * Math.pow(1.35, k) / 100) * 100,
-    intro:'전 범위 · 목표 상승', detail:'어디까지 가나 보자'};
+  return {time:diff.time,
+    target: Math.round(diff.target0 * Math.pow(diff.mult, roundIdx) / 100) * 100};
 }
 function roundPool(){
-  const cfg = roundCfg();
+  const fnOk = e => e.fn && (e.fn !== 'tan' || diff.tan)
+    && diff.angles.includes(e.deg) && (diff.rad || !e.rad);
   const vals = new Set();
-  EXPRS.forEach(e => { if (e.fn && cfg.angles.includes(e.deg)) vals.add(e.val); });
-  return EXPRS.filter(e => e.fn
-    ? (cfg.angles.includes(e.deg) && (cfg.rad || !e.rad))
-    : vals.has(e.val));
+  EXPRS.forEach(e => { if (fnOk(e)) vals.add(e.val); });
+  return EXPRS.filter(e => e.fn ? fnOk(e) : vals.has(e.val));
 }
 
 /* ---------- state ---------- */
 const BEST_KEY = 'trigpang-best';
+const bestOf = key => +(localStorage.getItem(BEST_KEY + '-' + key) || (key === 'easy' ? localStorage.getItem(BEST_KEY) : 0) || 0);
 let grid = [], idc = 0, chain = [], chainVal = null;
-let score = 0, best = +(localStorage.getItem(BEST_KEY) || 0), pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
+let score = 0, best = 0, pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
 let gauge = 0, fever = false, feverT = 0, hot = [];
 let time = 40, playing = false, locked = false, dragging = false, raf = 0, prev = 0;
 
@@ -729,15 +748,21 @@ function drawTarget(){
   $('targetlbl').textContent = '목표 ' + cfg.target;
 }
 function saveBest(){
-  if (score > best){ best = score; localStorage.setItem(BEST_KEY, best); }
-  $('welcome-best-val').textContent = best;
+  if (score > best){ best = score; localStorage.setItem(BEST_KEY + '-' + diffKey, best); }
+  drawBests();
+}
+function drawBests(){
+  Object.keys(DIFFS).forEach(k => {
+    const el = $('best-' + k);
+    if (el) el.textContent = '최고 ' + bestOf(k);
+  });
 }
 function startRound(){
   const cfg = roundCfg();
   roundScore = 0; time = cfg.time; locked = false; chain = []; chainVal = null;
-  $('roundlbl').textContent = '라운드 ' + (roundIdx+1);
+  $('roundlbl').textContent = `${diff.name} · 라운드 ${roundIdx+1}`;
   drawTarget(); buildBoard(); drawChainLine(); updateTimer();
-  say(`라운드 ${roundIdx+1} — ${cfg.intro}`);
+  say(`${diff.name} 라운드 ${roundIdx+1} — ${diff.desc}`);
   $('veil').hidden = true;
   playing = true; prev = 0; raf = requestAnimationFrame(tick);
 }
@@ -750,11 +775,12 @@ function roundClear(){
   roundIdx++;
   const next = roundCfg();
   $('rbonus').textContent = '+' + bonus;
-  $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 — <b>${next.intro}</b><br>${fmt(next.detail)}<br>목표 ${next.target}점 · ${next.time}초`;
+  $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 라운드 목표 <b>${next.target}점</b> · ${next.time}초`;
   $('overcard').hidden = true; $('roundcard').hidden = false;
   $('veil').hidden = false;
 }
-function startGame(){
+function startGame(key){
+  diffKey = key; diff = DIFFS[key]; best = bestOf(key);
   score = 0; pops = 0; longest = 0; gauge = 0; roundIdx = 0;
   fever = false; feverT = 0; hot = [];
   $('score').textContent = '0'; drawGauge(0); $('boardshell').classList.remove('fever');
@@ -768,7 +794,7 @@ function gameOver(){
   clearChain();
   saveBest();
   $('finalscore').textContent = score;
-  $('finalsub').innerHTML = `라운드 ${roundIdx+1}에서 종료 · 최고 기록 <b>${best}</b><br>팡 ${pops}회 · 최장 사슬 ${longest}개`;
+  $('finalsub').innerHTML = `${diff.name} · 라운드 ${roundIdx+1}에서 종료 · 최고 기록 <b>${best}</b><br>팡 ${pops}회 · 최장 사슬 ${longest}개`;
   $('roundcard').hidden = true; $('overcard').hidden = false;
   $('veil').hidden = false;
 }
@@ -778,8 +804,9 @@ function goHome(){
   saveBest();
   $('welcome').classList.remove('hide');
 }
-$('startbtn').addEventListener('click', startGame);
-$('retrybtn').addEventListener('click', startGame);
+document.querySelectorAll('.diff-btn').forEach(b =>
+  b.addEventListener('click', () => startGame(b.dataset.diff)));
+$('retrybtn').addEventListener('click', () => startGame(diffKey));
 $('homebtn').addEventListener('click', goHome);
 $('nextbtn').addEventListener('click', () => { $('roundcard').hidden = true; startRound(); });
 $('shuffle').addEventListener('click', () => {
@@ -807,7 +834,7 @@ window.addEventListener('resize', () => {
   drawChainLine();
 });
 
-$('welcome-best-val').textContent = best;
+drawBests();
 buildBoard();
 })();
 </script>
