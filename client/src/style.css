@@ -8,7 +8,7 @@
   --line:rgba(255,216,77,.18);
   --panel:rgba(6,41,31,.74);
   --shadow:0 24px 60px rgba(0,18,12,.42);
-  --t: min(calc((100vw - 100px)/6), 56px); --g: 6px;
+  --t: min(calc((100vw - 94px)/5), 66px); --g: 6px;
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
 html{background:var(--deep)}
@@ -291,7 +291,7 @@ button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   background:radial-gradient(circle, #fff1a8 0%, #ffd76b 34%, #f2e6b8 72%);
   box-shadow:0 0 36px rgba(250,204,21,.6), inset 0 2px 8px rgba(6,41,31,.18);
 }
-#boardwrap{position:relative; width:calc(var(--t)*6 + var(--g)*5); height:calc(var(--t)*6 + var(--g)*5); touch-action:none}
+#boardwrap{position:relative; width:calc(var(--t)*5 + var(--g)*4); height:calc(var(--t)*5 + var(--g)*4); touch-action:none}
 .tile{
   position:absolute; width:var(--t); height:var(--t);
   background:var(--ivory); border:1px solid rgba(6,41,31,.08); border-radius:10px;

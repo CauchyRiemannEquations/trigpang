@@ -1,6 +1,7 @@
-/* 특수각 팡: 6×6 보드 드래그 사슬 게임 */
+/* 특수각 팡: 5×5 보드 드래그 사슬 게임 */
 import { N, GAUGE_MAX, FEVER_LEN, EXPRS, isNeg, fmt, tileHTML, DIFFS, RECIP, bestOf, saveBestOf } from './gameConstants.js';
 import { $, openCard, closeVeil, showGameOver, hideWelcome, registerStopper, drawBests } from './ui.js';
+import { sfx } from './sound.js';
 
 let diffKey = 'easy', diff = DIFFS.easy;
 let grid = [], idc = 0, chain = [], chainVal = null;
@@ -21,7 +22,7 @@ function roundPool(){
   return EXPRS.filter(e => e.fn ? fnOk(e) : vals.has(e.val));
 }
 
-function tpx(){ const el = $('boardwrap'); return (el.clientWidth - 5*6)/6; }
+function tpx(){ const el = $('boardwrap'); return (el.clientWidth - (N-1)*6)/N; }
 const posX = c => c * (tpx() + 6);
 const posY = r => r * (tpx() + 6);
 
@@ -128,14 +129,15 @@ function tryAdd(t){
     setSel(chain.pop(), false); drawChainLine(); sayChain(); return;
   }
   if (chain.includes(t)) return;
-  if (!chain.length){ chain = [t]; chainVal = t.val; setSel(t, true); drawChainLine(); sayChain(); return; }
+  if (!chain.length){ chain = [t]; chainVal = t.val; setSel(t, true); drawChainLine(); sayChain(); sfx.select(1); return; }
   const last = chain[chain.length-1];
   if (Math.abs(last.r-t.r) > 1 || Math.abs(last.c-t.c) > 1) return;
   if (t.val !== chainVal){
     t.el.classList.add('shake'); setTimeout(()=>t.el.classList.remove('shake'), 230);
+    sfx.deny();
     return;
   }
-  chain.push(t); setSel(t, true); drawChainLine(); sayChain();
+  chain.push(t); setSel(t, true); drawChainLine(); sayChain(); sfx.select(chain.length);
 }
 function sayChain(){
   if (!chain.length){ say('같은 값끼리 드래그로 연결하세요'); return; }
@@ -167,6 +169,7 @@ function doPop(){
   $('bfx').appendChild(fl); setTimeout(()=>fl.remove(), 950);
   const ex = chain.find(t => t.expr.deg !== null) || chain[0];
   sweepTo(ex);
+  sfx.pop(n, fever);
   say(`${fmt(chainVal)} × ${n} 팡  +${pts}`, 'good');
   chain.forEach(t => { t.el.classList.add('pop'); grid[t.r][t.c] = null; });
   const popped = chain.slice();
@@ -216,6 +219,7 @@ function startFever(){
   hot = posVals.sort(()=>Math.random()-.5).slice(0,4);
   $('boardshell').classList.add('fever');
   say('피버! 점수 2배', 'warn');
+  sfx.fever();
 }
 function endFever(){
   fever = false; gauge = 0; drawGauge(0);
@@ -270,6 +274,7 @@ function roundClear(){
   $('rbonus').textContent = '+' + bonus;
   $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 라운드 목표 <b>${next.target}점</b> · ${next.time}초`;
   openCard('roundcard');
+  sfx.round();
 }
 function gameOver(){
   playing = false; dragging = false; cancelAnimationFrame(raf);
@@ -277,6 +282,7 @@ function gameOver(){
   saveBestOf(diffKey, score);
   best = bestOf(diffKey);
   drawBests();
+  sfx.over();
   showGameOver({
     score,
     subHTML: `${diff.name} · 라운드 ${roundIdx+1}에서 종료 · 최고 기록 <b>${best}</b><br>팡 ${pops}회 · 최장 사슬 ${longest}개`,
@@ -314,6 +320,7 @@ export function initPang(){
     reshuffleTiles();
     ensureMoves(true);
     say('보드 섞음 −2초', 'warn');
+    sfx.shuffle();
   });
 
   window.addEventListener('resize', () => {
