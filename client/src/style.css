@@ -21,7 +21,8 @@ body{
   color:var(--text); font-family:"Jua","Outfit",sans-serif; font-size:15px;
   display:flex; justify-content:center; align-items:flex-start; overflow-x:hidden; padding:12px 8px;
 }
-.game-layout{width:100%; max-width:430px}
+/* 세로 여백이 남으면 카드를 화면 가운데로 (넘치면 auto 마진이 0이 되어 위 정렬 유지) */
+.game-layout{width:100%; max-width:430px; margin-top:auto; margin-bottom:auto}
 .game-container{
   position:relative; overflow:hidden;
   display:flex; flex-direction:column; align-items:center; gap:10px;
@@ -62,7 +63,8 @@ body{
   animation:floatParticle linear infinite; pointer-events:none; filter:blur(.5px);
 }
 @keyframes floatParticle{
-  0%{transform:translateY(60px) rotate(0deg); opacity:0}
+  /* 시작점이 오버레이 바닥 아래로 내려가면(overflow-y:auto) 메인 화면에 스크롤이 생기므로 바닥 안쪽에서 출발 */
+  0%{transform:translateY(0) rotate(0deg); opacity:0}
   10%{opacity:.13} 90%{opacity:.13}
   100%{transform:translateY(calc(-100dvh - 80px)) rotate(360deg); opacity:0}
 }
