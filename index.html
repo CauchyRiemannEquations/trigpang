@@ -36,7 +36,7 @@ body{
 .game-container{
   position:relative; overflow:hidden;
   display:flex; flex-direction:column; align-items:center; gap:10px;
-  min-height:min(700px, calc(100dvh - 24px));
+  min-height:min(760px, calc(100dvh - 24px));
   padding:14px 14px 20px;
   background:var(--forest);
   border:1px solid rgba(255,216,77,.12);
@@ -103,14 +103,14 @@ body{
 
 .welcome-card{
   width:100%; max-width:340px; position:relative; z-index:1; margin:auto;
-  display:flex; flex-direction:column; gap:14px; text-align:center; align-items:center;
+  display:flex; flex-direction:column; gap:11px; text-align:center; align-items:center;
 }
 .welcome-icon-wrap{
-  width:96px; height:96px; display:grid; place-items:center; border-radius:50%;
+  width:76px; height:76px; display:grid; place-items:center; border-radius:50%;
   background:rgba(255,216,77,.10); box-shadow:0 0 34px rgba(255,216,77,.20);
 }
 .welcome-icon{
-  font-size:58px; line-height:1;
+  font-size:46px; line-height:1;
   animation:pineBounce 2.2s infinite alternate ease-in-out;
   filter:drop-shadow(0 8px 16px rgba(240,168,10,.45));
 }
@@ -118,7 +118,7 @@ body{
   from{transform:translateY(0) rotate(-4deg) scale(1)}
   to{transform:translateY(-12px) rotate(4deg) scale(1.05)}
 }
-.welcome-logo{width:100%; max-width:300px; margin:0 auto}
+.welcome-logo{width:100%; max-width:260px; margin:0 auto}
 .welcome-logo svg{display:block; width:100%; height:auto}
 .welcome-eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted)}
 .welcome-tagline{color:var(--muted); font-size:14px; font-family:"Jua",sans-serif}
@@ -144,15 +144,29 @@ body{
 .diff-btn[data-diff="normal"]:hover{border-color:rgba(255,216,77,.55)}
 .diff-btn[data-diff="hard"]:hover{border-color:rgba(255,107,107,.55)}
 .diff-btn[data-diff="master"]:hover{border-color:rgba(192,132,252,.55)}
+.diff-wide{grid-column:1 / -1; flex-direction:row; justify-content:center; align-items:baseline; gap:8px; padding:10px 8px}
+.diff-btn[data-diff="hell"] b{color:#f87171; text-shadow:0 0 12px rgba(248,113,113,.5)}
+.diff-btn[data-diff="hell"]:hover{border-color:rgba(248,113,113,.6)}
+.swipe-launch{
+  display:flex; flex-direction:row; align-items:baseline; justify-content:center; gap:8px;
+  width:100%; padding:12px 8px; border-radius:13px;
+  background:rgba(110,227,214,.08); border:1px solid rgba(110,227,214,.3); color:var(--text);
+  transition:transform .14s ease, border-color .14s ease;
+}
+.swipe-launch:hover{transform:translateY(-2px); border-color:rgba(110,227,214,.6)}
+.swipe-launch:active{transform:translateY(1px)}
+.swipe-launch b{font-size:16px; color:var(--cyan)}
+.swipe-launch span{font-size:11px; color:var(--muted); font-family:"Jua",sans-serif}
+.swipe-launch small{font-size:10px; color:var(--gold-soft); font-family:"Outfit",sans-serif; font-weight:700}
 
 .how-to-play{
-  width:100%; padding:12px 14px; text-align:left; border-radius:14px;
+  width:100%; padding:10px 12px; text-align:left; border-radius:14px;
   background:rgba(6,41,31,.72); border:1px solid var(--line);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
-  display:flex; flex-direction:column; gap:7px;
+  display:flex; flex-direction:column; gap:5px;
 }
-.htp-title{color:var(--gold-soft); font-size:12px; letter-spacing:.08em}
-.htp-row{color:#bed4c5; font-size:13px; line-height:1.55; font-family:"Jua",sans-serif; display:flex; gap:8px; align-items:flex-start}
+.htp-title{color:var(--gold-soft); font-size:11px; letter-spacing:.08em}
+.htp-row{color:#bed4c5; font-size:12px; line-height:1.5; font-family:"Jua",sans-serif; display:flex; gap:8px; align-items:flex-start}
 .htp-row .dot{flex:none; width:7px; height:7px; border-radius:50%; margin-top:6px; background:var(--gold)}
 .htp-row:nth-child(3) .dot{background:var(--lime)}
 .htp-row:nth-child(4) .dot{background:var(--cyan)}
@@ -233,6 +247,7 @@ button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
 }
 .tile .fn{font-family:"STIX Two Text",serif; font-weight:600; font-size:12px; line-height:1}
 .tile .fn.sin{color:#0e7490} .tile .fn.cos{color:#c2410c} .tile .fn.tan{color:#7c3aed}
+.tile .fn.csc{color:#1d4ed8} .tile .fn.sec{color:#b45309} .tile .fn.cot{color:#15803d}
 .tile b{font-family:"STIX Two Text",serif; font-weight:600; font-size:16px; line-height:1.15; letter-spacing:-.01em;
   display:flex; align-items:center; justify-content:center; gap:1px}
 .tile b.num{font-size:17px}
@@ -248,6 +263,7 @@ button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
   box-shadow:0 0 0 3px rgba(255,216,77,.25), 0 3px 0 #b97e08;
 }
 .tile.sel .fn.sin{color:#075e6e} .tile.sel .fn.cos{color:#9a3708} .tile.sel .fn.tan{color:#5b21b6}
+.tile.sel .fn.csc{color:#1e40af} .tile.sel .fn.sec{color:#92400e} .tile.sel .fn.cot{color:#166534}
 .tile.pop{transform:scale(0); opacity:0}
 .tile.shake{animation:shk .22s; background:#ffd4d4; border-color:var(--coral)}
 @keyframes shk{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
@@ -306,6 +322,67 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
 .result-sub{font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:10px}
 .result-sub b{color:var(--gold-soft)}
 .card .btn-start{margin-top:4px}
+
+/* ---------- 일반각 스와이프 모드 ---------- */
+.swipe-overlay{
+  position:absolute; inset:0; z-index:9;
+  display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px 16px 20px;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(110,227,214,.10) 0 50px, transparent 51px),
+    linear-gradient(155deg, #0b3a2b 0%, #06291f 100%);
+  border-radius:28px;
+  opacity:1; visibility:visible;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.swipe-overlay.hide{opacity:0; visibility:hidden; pointer-events:none}
+.sw-hud{width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:8px 14px; border-radius:14px; background:var(--panel); border:1px solid rgba(110,227,214,.18)}
+.sw-hud .stat b{color:var(--cyan)}
+.sw-title{font-size:13px; color:var(--muted)}
+.sw-timebar{width:100%; height:10px; border-radius:6px; overflow:hidden;
+  background:rgba(6,41,31,.86); border:1px solid rgba(110,227,214,.16)}
+#sw-timefill{display:block; height:100%; width:100%; border-radius:6px;
+  background:linear-gradient(90deg, #14b8a6, var(--cyan), #b9fff5);
+  transition:width .12s linear}
+#sw-timefill.crit{background:linear-gradient(90deg,#dc2626,#f97316,#facc15)}
+.sw-card{
+  width:100%; max-width:280px; min-height:104px; margin-top:6px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--ivory); border-radius:18px; border:1px solid rgba(6,41,31,.08);
+  box-shadow:0 6px 0 rgba(6,41,31,.15), inset 0 1px 0 #fff;
+  font-family:"STIX Two Text",serif; font-weight:600; font-size:30px; color:#173a29;
+  touch-action:none; user-select:none; gap:4px;
+  transition:transform .15s ease, background .15s ease;
+}
+.sw-card .fn{font-style:italic}
+.sw-card .fn.sin{color:#0e7490} .sw-card .fn.cos{color:#c2410c}
+.sw-card.good{background:#e7ffd6; transform:scale(1.04)}
+.sw-card.bad{background:#ffd4d4; animation:shk .22s}
+.sw-streak{min-height:18px; font-size:13px; color:var(--gold); font-family:"Outfit",sans-serif; font-weight:700}
+.sw-pads{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:100%; max-width:300px}
+.sw-pad{
+  padding:13px 6px; border-radius:13px;
+  background:rgba(6,41,31,.72); border:1px solid rgba(110,227,214,.24); color:var(--text);
+  font-family:"STIX Two Text",serif; font-weight:600; font-size:17px;
+  transition:transform .12s ease, background .15s, border-color .15s;
+}
+.sw-pad:active{transform:scale(.96)}
+.sw-pad[data-ans="sin x"]{grid-column:2; grid-row:1}
+.sw-pad[data-ans="cos x"]{grid-column:1; grid-row:2}
+.sw-pad[data-ans="−cos x"]{grid-column:3; grid-row:2}
+.sw-pad[data-ans="−sin x"]{grid-column:2; grid-row:3}
+.sw-center{grid-column:2; grid-row:2; display:grid; place-items:center; color:var(--muted); font-size:20px}
+.sw-pad.hit{background:var(--lime); border-color:var(--lime-deep); color:var(--deep)}
+.sw-pad.miss{background:#7f1d1d; border-color:var(--coral); color:#ffe4e6}
+.sw-exit{margin-top:auto}
+/* 오답 단위원 리플레이 */
+.rp-circle{width:170px; height:170px; margin:4px auto}
+#rp-t{transform-origin:85px 85px; transition:transform .8s cubic-bezier(.3,1.3,.4,1)}
+#rp-x{transform-origin:85px 85px}
+.rp-cap{font-family:"STIX Two Text",serif; font-size:19px; color:var(--gold-soft);
+  display:flex; align-items:center; justify-content:center; gap:4px}
+.rp-sub{font-family:"STIX Two Text",serif; font-size:14px; color:var(--muted); min-height:20px;
+  display:flex; align-items:center; justify-content:center; gap:3px}
 
 @media (max-height:740px){
   .welcome-overlay{min-height:calc(100dvh - 24px)}
@@ -424,8 +501,33 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
         <button class="diff-btn" data-diff="normal" type="button"><b>보통</b><span>둔각까지 · 호도법</span><small id="best-normal">최고 0</small></button>
         <button class="diff-btn" data-diff="hard" type="button"><b>어려움</b><span>전 범위 일반각</span><small id="best-hard">최고 0</small></button>
         <button class="diff-btn" data-diff="master" type="button"><b>고수</b><span>전 범위 + tan</span><small id="best-master">최고 0</small></button>
+        <button class="diff-btn diff-wide" data-diff="hell" type="button"><b>지옥</b><span>csc · sec · cot 총출동</span><small id="best-hell">최고 0</small></button>
       </div>
+
+      <button class="swipe-launch" id="swipebtn" type="button">
+        <b>일반각 모드</b><span>sin(π−x)는 뭘까? 4방향 스와이프</span><small id="best-swipe">최고 0</small>
+      </button>
     </div>
+  </div>
+
+  <!-- 일반각 스와이프 모드 -->
+  <div class="swipe-overlay hide" id="swipemode">
+    <header class="sw-hud">
+      <div class="stat"><b id="sw-score">0</b><label>점수</label></div>
+      <span class="sw-title">일반각 모드</span>
+      <div class="stat right"><b id="sw-timen">60.0</b><label>남은 시간</label></div>
+    </header>
+    <div class="sw-timebar"><i id="sw-timefill"></i></div>
+    <div class="sw-card" id="sw-card"></div>
+    <p class="sw-streak" id="sw-streak">이 식은 무엇과 같을까?</p>
+    <div class="sw-pads">
+      <button class="sw-pad" data-ans="sin x" type="button">sin x</button>
+      <button class="sw-pad" data-ans="cos x" type="button">cos x</button>
+      <div class="sw-center">✛</div>
+      <button class="sw-pad" data-ans="−cos x" type="button">−cos x</button>
+      <button class="sw-pad" data-ans="−sin x" type="button">−sin x</button>
+    </div>
+    <button class="btn-cancel sw-exit" id="sw-exit" type="button">그만하기</button>
   </div>
 
   <!-- 모달 -->
@@ -443,6 +545,27 @@ footer{width:100%; display:flex; align-items:center; justify-content:space-betwe
       <p class="result-sub" id="rnext"></p>
       <button class="btn-start" id="nextbtn" type="button">다음 라운드</button>
     </div>
+    <div class="card" id="replaycard" hidden>
+      <h2 class="card-title" style="font-size:20px">단위원으로 확인!</h2>
+      <svg class="rp-circle" viewBox="0 0 170 170">
+        <line x1="8" y1="85" x2="162" y2="85" stroke="#24543f" stroke-width="1.5"/>
+        <line x1="85" y1="8" x2="85" y2="162" stroke="#24543f" stroke-width="1.5"/>
+        <circle cx="85" cy="85" r="64" fill="none" stroke="#2e6a50" stroke-width="2"/>
+        <g id="rp-x">
+          <line x1="85" y1="85" x2="149" y2="85" stroke="#ffd84d" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="149" cy="85" r="4" fill="#ffd84d"/>
+        </g>
+        <g id="rp-t">
+          <line x1="85" y1="85" x2="149" y2="85" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="149" cy="85" r="4" fill="#ff6b6b"/>
+        </g>
+        <circle cx="85" cy="85" r="2.4" fill="#91b69f"/>
+        <text id="rp-xlbl" x="120" y="70" font-size="12" fill="#ffd84d" font-family="STIX Two Text,serif">x</text>
+      </svg>
+      <p class="rp-cap" id="rp-cap"></p>
+      <p class="rp-sub" id="rp-sub"></p>
+      <button class="btn-start" id="rp-continue" type="button">계속하기</button>
+    </div>
   </div>
 
 </main>
@@ -457,22 +580,22 @@ const $ = id => document.getElementById(id);
 const SINV = {0:'0',30:'1/2',45:'√2/2',60:'√3/2',90:'1',120:'√3/2',135:'√2/2',150:'1/2',180:'0',210:'−1/2',225:'−√2/2',240:'−√3/2',270:'−1',300:'−√3/2',315:'−√2/2',330:'−1/2'};
 const COSV = {0:'1',30:'√3/2',45:'√2/2',60:'1/2',90:'0',120:'−1/2',135:'−√2/2',150:'−√3/2',180:'−1',210:'−√3/2',225:'−√2/2',240:'−1/2',270:'0',300:'1/2',315:'√2/2',330:'√3/2'};
 const RAD = {0:'0',30:'π/6',45:'π/4',60:'π/3',90:'π/2',120:'2π/3',135:'3π/4',150:'5π/6',180:'π',210:'7π/6',225:'5π/4',240:'4π/3',270:'3π/2',300:'5π/3',315:'7π/4',330:'11π/6'};
-/* tan: 90°·270°는 정의되지 않으므로 제외 */
+/* tan: 90°·270°는 정의되지 않으므로 제외. csc·sec·cot도 각각 정의되는 각만 수록 */
 const TANV = {0:'0',30:'√3/3',45:'1',60:'√3',120:'−√3',135:'−1',150:'−√3/3',180:'0',210:'√3/3',225:'1',240:'√3',300:'−√3',315:'−1',330:'−√3/3'};
+const CSCV = {30:'2',45:'√2',60:'2√3/3',90:'1',120:'2√3/3',135:'√2',150:'2',210:'−2',225:'−√2',240:'−2√3/3',270:'−1',300:'−2√3/3',315:'−√2',330:'−2'};
+const SECV = {0:'1',30:'2√3/3',45:'√2',60:'2',120:'−2',135:'−√2',150:'−2√3/3',180:'−1',210:'−2√3/3',225:'−√2',240:'−2',300:'2',315:'√2',330:'2√3/3'};
+const COTV = {30:'√3',45:'1',60:'√3/3',90:'0',120:'−√3/3',135:'−1',150:'−√3',210:'√3',225:'1',240:'√3/3',270:'0',300:'−√3/3',315:'−1',330:'−√3'};
 const EXPRS = [];
-for (const d in SINV){
-  const deg = +d;
-  EXPRS.push({fn:'sin', arg:d+'°', deg, val:SINV[d], rad:false});
-  EXPRS.push({fn:'cos', arg:d+'°', deg, val:COSV[d], rad:false});
-  EXPRS.push({fn:'sin', arg:RAD[d], deg, val:SINV[d], rad:true});
-  EXPRS.push({fn:'cos', arg:RAD[d], deg, val:COSV[d], rad:true});
-}
-for (const d in TANV){
-  const deg = +d;
-  EXPRS.push({fn:'tan', arg:d+'°', deg, val:TANV[d], rad:false});
-  EXPRS.push({fn:'tan', arg:RAD[d], deg, val:TANV[d], rad:true});
-}
-['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1','√3/3','√3','−√3/3','−√3']
+const pushFn = (fn, table) => {
+  for (const d in table){
+    const deg = +d;
+    EXPRS.push({fn, arg:d+'°', deg, val:table[d], rad:false});
+    EXPRS.push({fn, arg:RAD[d], deg, val:table[d], rad:true});
+  }
+};
+pushFn('sin', SINV); pushFn('cos', COSV); pushFn('tan', TANV);
+pushFn('csc', CSCV); pushFn('sec', SECV); pushFn('cot', COTV);
+['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1','√3/3','√3','−√3/3','−√3','2','√2','2√3/3','−2','−√2','−2√3/3']
   .forEach(v => EXPRS.push({fn:null, arg:v, deg:null, val:v, rad:false}));
 const isNeg = v => v.startsWith('−');
 
@@ -492,14 +615,17 @@ const DIFFS = {
   normal: {name:'보통',   desc:'둔각까지 · 호도법',  angles:HALF,   rad:true,  tan:false, time:45, target0:900,  mult:1.35},
   hard:   {name:'어려움', desc:'전 범위 일반각',     angles:ALLDEG, rad:true,  tan:false, time:45, target0:1300, mult:1.4},
   master: {name:'고수',   desc:'전 범위 + tan',      angles:ALLDEG, rad:true,  tan:true,  time:45, target0:1500, mult:1.4},
+  hell:   {name:'지옥',   desc:'csc · sec · cot 총출동', angles:ALLDEG, rad:true, tan:true, recip:true, time:45, target0:1800, mult:1.45},
 };
 let diffKey = 'easy', diff = DIFFS.easy;
+const RECIP = ['csc','sec','cot'];
 function roundCfg(){
   return {time:diff.time,
     target: Math.round(diff.target0 * Math.pow(diff.mult, roundIdx) / 100) * 100};
 }
 function roundPool(){
   const fnOk = e => e.fn && (e.fn !== 'tan' || diff.tan)
+    && (!RECIP.includes(e.fn) || diff.recip)
     && diff.angles.includes(e.deg) && (diff.rad || !e.rad);
   const vals = new Set();
   EXPRS.forEach(e => { if (fnOk(e)) vals.add(e.val); });
@@ -513,6 +639,7 @@ let grid = [], idc = 0, chain = [], chainVal = null;
 let score = 0, best = 0, pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
 let gauge = 0, fever = false, feverT = 0, hot = [];
 let time = 40, playing = false, locked = false, dragging = false, raf = 0, prev = 0;
+let mode = 'pang';
 
 function tpx(){ const el = $('boardwrap'); return (el.clientWidth - 5*6)/6; }
 const posX = c => c * (tpx() + 6);
@@ -752,7 +879,7 @@ function saveBest(){
   drawBests();
 }
 function drawBests(){
-  Object.keys(DIFFS).forEach(k => {
+  [...Object.keys(DIFFS), 'swipe'].forEach(k => {
     const el = $('best-' + k);
     if (el) el.textContent = '최고 ' + bestOf(k);
   });
@@ -780,6 +907,7 @@ function roundClear(){
   $('veil').hidden = false;
 }
 function startGame(key){
+  mode = 'pang';
   diffKey = key; diff = DIFFS[key]; best = bestOf(key);
   score = 0; pops = 0; longest = 0; gauge = 0; roundIdx = 0;
   fever = false; feverT = 0; hot = [];
@@ -800,13 +928,15 @@ function gameOver(){
 }
 function goHome(){
   $('veil').hidden = true;
-  $('overcard').hidden = true; $('roundcard').hidden = true;
-  saveBest();
+  $('overcard').hidden = true; $('roundcard').hidden = true; $('replaycard').hidden = true;
+  swStop();
+  $('swipemode').classList.add('hide');
+  drawBests();
   $('welcome').classList.remove('hide');
 }
 document.querySelectorAll('.diff-btn').forEach(b =>
   b.addEventListener('click', () => startGame(b.dataset.diff)));
-$('retrybtn').addEventListener('click', () => startGame(diffKey));
+$('retrybtn').addEventListener('click', () => mode === 'swipe' ? swStart() : startGame(diffKey));
 $('homebtn').addEventListener('click', goHome);
 $('nextbtn').addEventListener('click', () => { $('roundcard').hidden = true; startRound(); });
 $('shuffle').addEventListener('click', () => {
@@ -832,6 +962,147 @@ window.addEventListener('resize', () => {
     t.el.style.left = posX(c)+'px'; t.el.style.top = posY(r)+'px';
   }
   drawChainLine();
+});
+
+/* ---------- 일반각 스와이프 모드 ----------
+   sin(π−x) 같은 일반각 식을 sin x / −sin x / cos x / −cos x 로 축약.
+   위=sin x, 아래=−sin x, 왼쪽=cos x, 오른쪽=−cos x. 오답이면 단위원 리플레이. */
+const SW_TIME = 60, SW_X = 30; // 리플레이 예시는 항상 x = 30°
+const SW_T = [
+  {arg:'−x',       sin:'−sin x', cos:'cos x',  deg: x => (360 - x) % 360},
+  {arg:'π − x',    sin:'sin x',  cos:'−cos x', deg: x => 180 - x},
+  {arg:'π + x',    sin:'−sin x', cos:'−cos x', deg: x => 180 + x},
+  {arg:'π/2 − x',  sin:'cos x',  cos:'sin x',  deg: x => 90 - x},
+  {arg:'π/2 + x',  sin:'cos x',  cos:'−sin x', deg: x => 90 + x},
+  {arg:'3π/2 − x', sin:'−cos x', cos:'−sin x', deg: x => 270 - x},
+  {arg:'3π/2 + x', sin:'−cos x', cos:'sin x',  deg: x => 270 + x},
+];
+let swScore = 0, swStreak = 0, swMaxStreak = 0, swHits = 0, swMiss = 0;
+let swTime = SW_TIME, swPlaying = false, swRaf = 0, swPrev = 0, swCard = null, swLock = false;
+
+function swDeal(){
+  let fn, t;
+  do {
+    fn = Math.random() < .5 ? 'sin' : 'cos';
+    t = SW_T[Math.floor(Math.random() * SW_T.length)];
+  } while (swCard && swCard.fn === fn && swCard.t === t);
+  swCard = {fn, t, ans: t[fn]};
+  $('sw-card').innerHTML = `<span class="fn ${fn}">${fn}</span>(${fmt(t.arg)})`;
+  $('sw-card').classList.remove('good','bad');
+}
+function swSay(){
+  $('sw-streak').textContent = swStreak >= 2 ? `${swStreak}연속 정답!` : '이 식은 무엇과 같을까?';
+}
+function swTick(ts){
+  if (!swPlaying) return;
+  if (swPrev) swTime -= (ts - swPrev)/1000;
+  swPrev = ts;
+  if (swTime <= 0){ swTime = 0; swDrawTime(); swOver(); return; }
+  swDrawTime();
+  swRaf = requestAnimationFrame(swTick);
+}
+function swDrawTime(){
+  $('sw-timen').textContent = swTime.toFixed(1);
+  const f = $('sw-timefill');
+  f.style.width = (swTime/SW_TIME*100) + '%';
+  f.classList.toggle('crit', swTime <= 8);
+}
+function swPause(){ swPlaying = false; cancelAnimationFrame(swRaf); }
+function swResume(){ if (swTime <= 0) return; swPlaying = true; swPrev = 0; swRaf = requestAnimationFrame(swTick); }
+function swStop(){ swPause(); swLock = false; }
+
+function swStart(){
+  mode = 'swipe';
+  swScore = 0; swStreak = 0; swMaxStreak = 0; swHits = 0; swMiss = 0;
+  swTime = SW_TIME; swCard = null; swLock = false;
+  $('sw-score').textContent = '0';
+  $('overcard').hidden = true; $('roundcard').hidden = true; $('replaycard').hidden = true;
+  $('veil').hidden = true;
+  $('welcome').classList.add('hide');
+  $('swipemode').classList.remove('hide');
+  swDeal(); swSay(); swDrawTime();
+  swPlaying = true; swPrev = 0; swRaf = requestAnimationFrame(swTick);
+}
+function swOver(){
+  swStop();
+  const key = BEST_KEY + '-swipe';
+  const prevBest = bestOf('swipe');
+  if (swScore > prevBest) localStorage.setItem(key, swScore);
+  $('finalscore').textContent = swScore;
+  $('finalsub').innerHTML = `일반각 모드 · 정답 ${swHits} · 오답 ${swMiss} · 최대 연속 ${swMaxStreak}<br>최고 기록 <b>${Math.max(swScore, prevBest)}</b>`;
+  $('roundcard').hidden = true; $('replaycard').hidden = true; $('overcard').hidden = false;
+  $('veil').hidden = false;
+}
+const swPadOf = a => document.querySelector(`.sw-pad[data-ans="${a}"]`);
+function swAnswer(ans){
+  if (!swPlaying || swLock) return;
+  const card = $('sw-card');
+  if (ans === swCard.ans){
+    swHits++; swStreak++; swMaxStreak = Math.max(swMaxStreak, swStreak);
+    const pts = 100 + Math.min(swStreak - 1, 10) * 20;
+    swScore += pts;
+    $('sw-score').textContent = swScore;
+    card.classList.add('good');
+    const pad = swPadOf(ans); pad.classList.add('hit');
+    swLock = true;
+    setTimeout(() => { pad.classList.remove('hit'); swLock = false; swDeal(); swSay(); }, 220);
+  } else {
+    swMiss++; swStreak = 0;
+    card.classList.add('bad');
+    const wrongPad = swPadOf(ans), rightPad = swPadOf(swCard.ans);
+    wrongPad.classList.add('miss'); rightPad.classList.add('hit');
+    swLock = true;
+    swPause();
+    setTimeout(() => {
+      wrongPad.classList.remove('miss'); rightPad.classList.remove('hit');
+      swReplay();
+    }, 550);
+  }
+}
+function swReplay(){
+  const {fn, t, ans} = swCard;
+  const T = t.deg(SW_X);
+  const FNV = fn === 'sin' ? SINV : COSV;
+  const ansAt30 = ans.replace('x', SW_X + '°');
+  $('rp-x').style.transform = `rotate(${-SW_X}deg)`;
+  $('rp-t').style.transform = `rotate(${-SW_X}deg)`;
+  $('rp-cap').innerHTML = `${fn}(${fmt(t.arg)}) = ${fmt(ans)}`;
+  $('rp-sub').innerHTML = `x = ${SW_X}° 라면 : ${fn} ${T}° = ${fmt(FNV[T])} = ${fmt(ansAt30)}`;
+  $('overcard').hidden = true; $('roundcard').hidden = true; $('replaycard').hidden = false;
+  $('veil').hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $('rp-t').style.transform = `rotate(${-T}deg)`;
+  }));
+}
+$('rp-continue').addEventListener('click', () => {
+  $('veil').hidden = true; $('replaycard').hidden = true;
+  swLock = false; swDeal(); swSay(); swResume();
+});
+$('swipebtn').addEventListener('click', swStart);
+$('sw-exit').addEventListener('click', goHome);
+document.querySelectorAll('.sw-pad').forEach(p =>
+  p.addEventListener('click', () => swAnswer(p.dataset.ans)));
+/* 카드 스와이프 제스처 */
+(() => {
+  const card = $('sw-card');
+  let sx = 0, sy = 0, on = false;
+  card.addEventListener('pointerdown', e => {
+    on = true; sx = e.clientX; sy = e.clientY;
+    try { card.setPointerCapture(e.pointerId); } catch {}
+  });
+  card.addEventListener('pointerup', e => {
+    if (!on) return; on = false;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    swAnswer(Math.abs(dx) > Math.abs(dy)
+      ? (dx > 0 ? '−cos x' : 'cos x')
+      : (dy > 0 ? '−sin x' : 'sin x'));
+  });
+})();
+document.addEventListener('keydown', e => {
+  if (mode !== 'swipe' || !swPlaying) return;
+  const map = {ArrowUp:'sin x', ArrowDown:'−sin x', ArrowLeft:'cos x', ArrowRight:'−cos x'};
+  if (map[e.key]){ e.preventDefault(); swAnswer(map[e.key]); }
 });
 
 drawBests();
