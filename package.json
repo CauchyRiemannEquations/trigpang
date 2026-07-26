@@ -1,6 +1,6 @@
 {
   "name": "trigpang",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "삼각팡(TrigPang) - 삼각함수 값 매칭 퍼즐",
   "type": "module",
   "scripts": {

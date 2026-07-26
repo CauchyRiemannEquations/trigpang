@@ -1,6 +1,7 @@
 /* 일반각 팡: sin(π−x) 등을 4방향으로 축약 분류. 오답이면 단위원 리플레이 */
 import { SINV, COSV, fmt, SW_TIME, SW_X, SW_T, bestOf, saveBestOf } from './gameConstants.js';
 import { $, openCard, closeVeil, showGameOver, hideWelcome, registerStopper, drawBests } from './ui.js';
+import { sfx } from './sound.js';
 
 let swScore = 0, swStreak = 0, swMaxStreak = 0, swHits = 0, swMiss = 0;
 let swTime = SW_TIME, swPlaying = false, swRaf = 0, swPrev = 0, swCard = null, swLock = false;
@@ -48,6 +49,7 @@ export function startSwipe(){
 }
 function swOver(){
   swStop();
+  sfx.over();
   const prevBest = bestOf('swipe');
   saveBestOf('swipe', swScore);
   drawBests();
@@ -67,12 +69,14 @@ function swAnswer(ans){
     swScore += pts;
     $('sw-score').textContent = swScore;
     card.classList.add('good');
+    sfx.good(swStreak);
     const pad = swPadOf(ans); pad.classList.add('hit');
     swLock = true;
     setTimeout(() => { pad.classList.remove('hit'); swLock = false; swDeal(); swSay(); }, 220);
   } else {
     swMiss++; swStreak = 0;
     card.classList.add('bad');
+    sfx.bad();
     const wrongPad = swPadOf(ans), rightPad = swPadOf(swCard.ans);
     wrongPad.classList.add('miss'); rightPad.classList.add('hit');
     swLock = true;
