@@ -46,10 +46,48 @@ sin(π−x), cos(3π/2+x) 같은 일반각 식이 카드로 나오면 **sin x / 
 - [x] 일반각 모드: 4방향 스와이프 분류 — sin(π−x) 같은 식을 sin x / −sin x / cos x / −cos x 로 축약, 오답 시 단위원 리플레이
 - [ ] 랭킹 시스템 (수열팡 서버 연동)
 
+## 메인 화면
+
+- **특수각 팡!** 버튼을 누르면 난이도 5종이 가로 스크롤 카드로 펼쳐진다
+- **일반각 팡!** 버튼으로 스와이프 모드 바로 진입
+- 하단에 플레이 방법 · 업데이트 내역 · Contact
+- 홈 화면에 설치 가능한 PWA — 안드로이드·iOS 모두 파인애플 아이콘
+
+## 프로젝트 구조
+
+시퀀스팡과 동일한 Vite + 바닐라 JS 모듈 구조.
+
+```text
+client/
+  public/
+    manifest.webmanifest      PWA 매니페스트
+    service-worker.js         오프라인 캐시
+    icon-192/512.png          파인애플 아이콘 (maskable · apple-touch 포함)
+  src/
+    main.js                   엔트리 · 모드 선택 와이어링
+    gameConstants.js          값 테이블 · 난이도 · 일반각 변환
+    pangGame.js               특수각 팡 (보드 엔진)
+    swipeMode.js              일반각 팡 (스와이프)
+    howToPlay.js              플레이 방법 모달
+    updateNotes.js            업데이트 내역 모달
+    ui.js                     화면 전환 · 공용 모달
+    style.css
+  index.html
+vite.config.js
+vercel.json
+```
+
 ## 실행
 
-정적 단일 파일. `index.html`을 열면 끝. GitHub Pages 배포 시 루트 그대로 사용.
+```bash
+npm install
+npm run dev     # 개발 서버
+npm run build   # client/dist 프로덕션 빌드
+```
+
+- Vercel: main 푸시 시 자동 배포 → https://trigpang.vercel.app
+- GitHub Pages: Actions 워크플로가 빌드·배포 → https://cauchyriemannequations.github.io/trigpang/
 
 ## 기술
 
-바닐라 HTML/CSS/JS 단일 파일. 외부 의존성은 Google Fonts뿐.
+Vite + 바닐라 JS ES 모듈. 프레임워크 없음. 외부 의존성은 Google Fonts뿐.

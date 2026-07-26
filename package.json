@@ -1,0 +1,22 @@
+{
+  "name": "trigpang",
+  "version": "0.3.0",
+  "description": "삼각팡(TrigPang) - 삼각함수 값 매칭 퍼즐",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "trigpang",
+    "pineapple",
+    "puzzle",
+    "trigonometry"
+  ],
+  "author": "CauchyRiemannEquations",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.4.21"
+  }
+}

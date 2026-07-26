@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>삼각팡 - TRIGPANG</title>
+<meta name="theme-color" content="#0b3a2b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Bagel+Fat+One&family=Outfit:wght@400;600;700;800&family=STIX+Two+Text:wght@500;600&display=swap" rel="stylesheet">
+<script type="module" src="/src/main.js"></script>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="삼각팡">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="삼각팡">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+</head>
+<body>
+<div class="game-layout">
+<main class="game-container" id="game-container">
+
+  <!-- HUD -->
+  <header class="hud">
+    <div class="stat"><b id="score">0</b><label>점수</label></div>
+    <div class="circlewrap">
+      <svg id="ucircle" viewBox="0 0 64 64">
+        <line x1="4" y1="32" x2="60" y2="32" stroke="#24543f" stroke-width="1.5"/>
+        <line x1="32" y1="4" x2="32" y2="60" stroke="#24543f" stroke-width="1.5"/>
+        <circle cx="32" cy="32" r="24" fill="none" stroke="#2e6a50" stroke-width="2"/>
+        <circle id="gaugearc" cx="32" cy="32" r="29" fill="none" stroke="#94f20d" stroke-width="3.5"
+          stroke-linecap="round" stroke-dasharray="182.2" stroke-dashoffset="182.2"/>
+        <g id="sweep">
+          <line x1="32" y1="32" x2="56" y2="32" stroke="#ffd84d" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="56" cy="32" r="3.4" fill="#ffd84d"/>
+        </g>
+        <circle cx="32" cy="32" r="2" fill="#91b69f"/>
+      </svg>
+      <span id="caption"></span>
+    </div>
+    <div class="stat right"><b id="timen">40.0</b><label id="roundlbl">라운드 1</label></div>
+  </header>
+  <div class="timebar"><i id="timefill"></i></div>
+  <div class="targetbar"><div class="track"><i id="targetfill"></i></div><span id="targetlbl">목표 500</span></div>
+
+  <!-- 보드 -->
+  <div class="board-shell" id="boardshell">
+    <section id="boardwrap" aria-label="삼각비 타일 보드">
+      <svg id="bo"></svg>
+      <div id="bfx"></div>
+    </section>
+  </div>
+
+  <p id="status">같은 값끼리 드래그로 연결하세요</p>
+
+  <footer>
+    <button id="shuffle" class="btn-shuffle" type="button">섞기 −2초</button>
+    <span class="hint">3개 이상 잇고 손을 떼면 팡</span>
+  </footer>
+
+  <!-- 웰컴 오버레이 (메인 화면) -->
+  <div class="welcome-overlay" id="welcome">
+    <span class="pine-particle particle-1">🍍</span>
+    <span class="pine-particle particle-2">🍍</span>
+    <span class="pine-particle particle-3">🍍</span>
+    <span class="pine-particle particle-4">🍍</span>
+    <span class="pine-particle particle-5">🍍</span>
+    <span class="pine-particle particle-6">🍍</span>
+    <span class="sparkle sparkle-1"></span>
+    <span class="sparkle sparkle-2"></span>
+    <span class="sparkle sparkle-3"></span>
+    <span class="sparkle sparkle-4"></span>
+    <span class="sparkle sparkle-5"></span>
+
+    <div class="welcome-card">
+      <div class="welcome-icon-wrap"><span class="welcome-icon" role="img" aria-label="pineapple">🍍</span></div>
+      <h1 class="welcome-logo" aria-label="삼각팡">
+        <svg viewBox="0 0 440 170" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-gold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffe58a"/>
+              <stop offset="100%" stop-color="#f0a80a"/>
+            </linearGradient>
+          </defs>
+          <path d="M75 96 C 130 44, 185 44, 220 88 S 310 132, 358 80"
+            stroke="rgba(255,216,77,0.5)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <g font-family="'Bagel Fat One','Jua',sans-serif" font-size="56" text-anchor="middle">
+            <g transform="translate(88,88) rotate(-6)">
+              <rect x="-46" y="-46" width="92" height="92" rx="18" fill="#fffbea" stroke="#0b3a2b" stroke-width="5"/>
+              <text y="20" fill="#14532d">삼</text>
+              <text x="30" y="-26" font-family="'STIX Two Text',serif" font-weight="600" font-size="16" fill="#c2410c">30°</text>
+            </g>
+            <g transform="translate(208,82) rotate(4)">
+              <rect x="-46" y="-46" width="92" height="92" rx="18" fill="#fffbea" stroke="#0b3a2b" stroke-width="5"/>
+              <text y="20" fill="#14532d">각</text>
+              <text x="30" y="-26" font-family="'STIX Two Text',serif" font-weight="600" font-size="16" fill="#0e7490">π/4</text>
+            </g>
+            <g transform="translate(340,80) rotate(7)">
+              <path fill="#ffd84d" opacity="0.9" transform="scale(1.35)"
+                d="M0-58 L11-25 L41-41 L24-12 L58-6 L25 5 L41 36 L11 20 L3 57 L-9 24 L-39 38 L-24 9 L-57 1 L-25-9 L-38-39 L-11-22 Z"/>
+              <rect x="-50" y="-50" width="100" height="100" rx="20" fill="url(#logo-gold)" stroke="#0b3a2b" stroke-width="6"/>
+              <text y="22" font-size="60" fill="#06291f">팡</text>
+              <text x="34" y="-28" font-family="'STIX Two Text',serif" font-weight="600" font-size="17" fill="#14532d">½</text>
+            </g>
+          </g>
+        </svg>
+      </h1>
+      <p class="welcome-tagline">값이 같으면 생김새가 달라도 이어져요</p>
+
+      <!-- 모드 선택 -->
+      <div class="mode-box">
+        <button class="btn-start btn-mode" id="btn-special" type="button">
+          특수각 팡!<small class="mode-sub">난이도 골라서 사슬 팡</small>
+        </button>
+        <div class="diff-scroll" id="diff-scroll" hidden>
+          <button class="diff-card" data-diff="easy" type="button"><b>쉬움</b><span>1사분면</span><small id="best-easy">최고 0</small></button>
+          <button class="diff-card" data-diff="normal" type="button"><b>보통</b><span>호도법</span><small id="best-normal">최고 0</small></button>
+          <button class="diff-card" data-diff="hard" type="button"><b>어려움</b><span>전 범위</span><small id="best-hard">최고 0</small></button>
+          <button class="diff-card" data-diff="master" type="button"><b>고수</b><span>+ tan</span><small id="best-master">최고 0</small></button>
+          <button class="diff-card" data-diff="hell" type="button"><b>지옥</b><span>csc·sec·cot</span><small id="best-hell">최고 0</small></button>
+        </div>
+        <button class="btn-start btn-mode btn-mode-swipe" id="btn-swipe" type="button">
+          일반각 팡!<small class="mode-sub">sin(π−x)? 스와이프 <b id="best-swipe">최고 0</b></small>
+        </button>
+      </div>
+
+      <!-- 하단 유틸 링크 -->
+      <div class="welcome-links-row" id="welcome-links-row">
+        <button id="btn-howto" type="button">플레이 방법</button>
+        <button id="btn-notes" type="button">업데이트 내역</button>
+        <a id="contact-link" href="mailto:crequationsmath@gmail.com" title="문의사항은 이메일로 보내주세요">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 일반각 스와이프 모드 -->
+  <div class="swipe-overlay hide" id="swipemode">
+    <header class="sw-hud">
+      <div class="stat"><b id="sw-score">0</b><label>점수</label></div>
+      <span class="sw-title">일반각 모드</span>
+      <div class="stat right"><b id="sw-timen">60.0</b><label>남은 시간</label></div>
+    </header>
+    <div class="sw-timebar"><i id="sw-timefill"></i></div>
+    <div class="sw-card" id="sw-card"></div>
+    <p class="sw-streak" id="sw-streak">이 식은 무엇과 같을까?</p>
+    <div class="sw-pads">
+      <button class="sw-pad" data-ans="sin x" type="button">sin x</button>
+      <button class="sw-pad" data-ans="cos x" type="button">cos x</button>
+      <div class="sw-center">✛</div>
+      <button class="sw-pad" data-ans="−cos x" type="button">−cos x</button>
+      <button class="sw-pad" data-ans="−sin x" type="button">−sin x</button>
+    </div>
+    <button class="btn-cancel sw-exit" id="sw-exit" type="button">그만하기</button>
+  </div>
+
+  <!-- 모달 -->
+  <div class="veil" id="veil" hidden>
+    <div class="card" id="overcard" hidden>
+      <h2 class="card-title">타임 오버!</h2>
+      <div class="result" id="finalscore">0</div>
+      <p class="result-sub" id="finalsub"></p>
+      <button class="btn-start" id="retrybtn" type="button">다시 하기</button>
+      <button class="btn-cancel" id="homebtn" type="button">메인 화면으로 돌아가기</button>
+    </div>
+    <div class="card" id="roundcard" hidden>
+      <h2 class="card-title" id="rtitle">라운드 클리어</h2>
+      <div class="result" id="rbonus">+0</div>
+      <p class="result-sub" id="rnext"></p>
+      <button class="btn-start" id="nextbtn" type="button">다음 라운드</button>
+    </div>
+    <div class="card" id="replaycard" hidden>
+      <h2 class="card-title" style="font-size:20px">단위원으로 확인!</h2>
+      <svg class="rp-circle" viewBox="0 0 170 170">
+        <line x1="8" y1="85" x2="162" y2="85" stroke="#24543f" stroke-width="1.5"/>
+        <line x1="85" y1="8" x2="85" y2="162" stroke="#24543f" stroke-width="1.5"/>
+        <circle cx="85" cy="85" r="64" fill="none" stroke="#2e6a50" stroke-width="2"/>
+        <g id="rp-x">
+          <line x1="85" y1="85" x2="149" y2="85" stroke="#ffd84d" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="149" cy="85" r="4" fill="#ffd84d"/>
+        </g>
+        <g id="rp-t">
+          <line x1="85" y1="85" x2="149" y2="85" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="149" cy="85" r="4" fill="#ff6b6b"/>
+        </g>
+        <circle cx="85" cy="85" r="2.4" fill="#91b69f"/>
+        <text id="rp-xlbl" x="120" y="70" font-size="12" fill="#ffd84d" font-family="STIX Two Text,serif">x</text>
+      </svg>
+      <p class="rp-cap" id="rp-cap"></p>
+      <p class="rp-sub" id="rp-sub"></p>
+      <button class="btn-start" id="rp-continue" type="button">계속하기</button>
+    </div>
+
+    <!-- 플레이 방법 -->
+    <div class="card card-wide" id="htpcard" hidden>
+      <h2 class="card-title" style="font-size:22px">플레이 방법</h2>
+      <div class="htp-demo" aria-hidden="true">
+        <span class="demo-tile"><i class="fn sin">sin</i><b>30°</b></span>
+        <span class="demo-tile"><i class="fn cos">cos</i><b>60°</b></span>
+        <span class="demo-tile"><b class="frac-wrap"><span class="frac"><span>1</span><span>2</span></span></b></span>
+      </div>
+      <p class="htp-demo-cap">전부 같은 값 — 전부 한 사슬!</p>
+      <div class="how-to-play">
+        <div class="htp-section">특수각 팡</div>
+        <div class="htp-row"><span class="dot"></span><span>6×6 보드에서 <span class="htp-highlight">값이 같은</span> 타일을 3개 이상 드래그로 잇고 놓으면 팡</span></div>
+        <div class="htp-row"><span class="dot"></span><span>제한 시간 안에 목표 점수를 넘기면 다음 라운드 — 남은 시간은 보너스</span></div>
+        <div class="htp-row"><span class="dot"></span><span>단위원 게이지를 채우면 <span class="htp-highlight">피버</span> — 8초간 점수 2배</span></div>
+        <div class="htp-section">일반각 팡</div>
+        <div class="htp-row"><span class="dot"></span><span><span class="htp-ex">sin(π−x)</span> 같은 식을 <span class="htp-ex">sin x · −sin x · cos x · −cos x</span> 로 축약해 4방향 스와이프</span></div>
+        <div class="htp-row"><span class="dot"></span><span>오답이면 <span class="htp-highlight">단위원 리플레이</span>로 왜 그런지 보여줘요 (타이머 정지)</span></div>
+      </div>
+      <button class="btn-cancel" id="htp-close" type="button">닫기</button>
+    </div>
+
+    <!-- 업데이트 내역 -->
+    <div class="card card-wide" id="notescard" hidden>
+      <h2 class="card-title" style="font-size:22px">업데이트 내역</h2>
+      <div class="notes-list" id="notes-list"></div>
+      <button class="btn-cancel" id="notes-close" type="button">닫기</button>
+    </div>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "삼각팡 - TRIGPANG",
+  "short_name": "삼각팡",
+  "description": "값이 같으면 생김새가 달라도 이어진다 — 삼각함수 값 매칭 퍼즐",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06291f",
+  "theme_color": "#0b3a2b",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
