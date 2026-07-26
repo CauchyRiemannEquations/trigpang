@@ -3,114 +3,328 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>삼각팡</title>
+<title>삼각팡 - TRIGPANG</title>
+<meta name="theme-color" content="#ffd84d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=STIX+Two+Text:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Bagel+Fat+One&family=Outfit:wght@400;600;700;800&family=STIX+Two+Text:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0C2B28; --panel:#113732; --line:#1E4A44;
-  --card:#F6EFE3; --card-line:#E2D6C2; --ink:#20302D; --ink-soft:#5C6B67;
-  --coral:#FF7A59; --coral-soft:#FFDCCF; --amber:#FFC85C; --mint:#4ADE9E; --red:#FF6B6B;
-  --text:#F1F5F2; --muted:#8FAAA3;
-  --t: min(calc((100vw - 60px)/6), 58px); --g: 6px;
+  /* 수열팡 시리즈 공통 포레스트 팔레트 + 삼각팡 파인애플 골드 */
+  --deep:#06291f; --forest:#0b3a2b; --forest-soft:#124a36;
+  --gold:#ffd84d; --gold-deep:#f0a80a; --gold-soft:#ffe58a;
+  --lime:#94f20d; --lime-deep:#72cf0a;
+  --ivory:#fffbea; --coral:#ff6b6b; --cyan:#6ee3d6;
+  --text:#f7ffe8; --muted:#91b69f;
+  --line:rgba(255,216,77,.18);
+  --panel:rgba(6,41,31,.74);
+  --shadow:0 24px 60px rgba(0,18,12,.42);
+  --t: min(calc((100vw - 100px)/6), 56px); --g: 6px;
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+html{background:var(--deep)}
 html,body{height:100%}
-body{background:var(--bg); color:var(--text); font-family:"IBM Plex Sans KR",sans-serif; font-size:15px;
-  display:flex; justify-content:center; overflow-x:hidden}
-#app{width:100%; max-width:440px; padding:14px 14px 22px; display:flex; flex-direction:column; align-items:center; gap:10px}
+body{
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,216,77,.10), transparent 22rem),
+    radial-gradient(circle at 88% 82%, rgba(110,227,214,.09), transparent 25rem),
+    var(--deep);
+  color:var(--text); font-family:"Jua","Outfit",sans-serif; font-size:15px;
+  display:flex; justify-content:center; align-items:flex-start; overflow-x:hidden; padding:12px 8px;
+}
+.game-layout{width:100%; max-width:430px}
+.game-container{
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  min-height:min(640px, calc(100dvh - 24px));
+  padding:14px 14px 20px;
+  background:var(--forest);
+  border:1px solid rgba(255,216,77,.12);
+  border-radius:28px;
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.game-container::before{
+  content:''; position:absolute; right:-88px; bottom:8%;
+  width:150px; height:150px; border-radius:50%;
+  background:rgba(255,216,77,.06); pointer-events:none;
+}
 
-.hud{width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px}
+/* ---------- 웰컴 오버레이 (메인 화면) ---------- */
+.welcome-overlay{
+  position:absolute; inset:0; z-index:10;
+  display:flex; padding:22px 18px; overflow-y:auto;
+  background:
+    radial-gradient(circle at 86% 16%, rgba(255,216,77,.12) 0 54px, transparent 55px),
+    linear-gradient(155deg, #0b3a2b 0%, #06291f 100%);
+  border-radius:28px;
+  opacity:1; visibility:visible;
+  transition:opacity .35s ease, visibility .35s ease, transform .35s ease;
+}
+.welcome-overlay::before{
+  content:''; position:absolute; left:-92px; bottom:7%;
+  width:150px; height:150px; border-radius:50%;
+  background:rgba(110,227,214,.11); pointer-events:none;
+}
+.welcome-overlay.hide{opacity:0; visibility:hidden; transform:scale(.95); pointer-events:none}
+
+/* 떠다니는 파인애플 파티클 */
+.pine-particle{
+  position:absolute; bottom:0; font-size:26px; opacity:0; color:var(--gold-soft);
+  animation:floatParticle linear infinite; pointer-events:none; filter:blur(.5px);
+}
+@keyframes floatParticle{
+  0%{transform:translateY(60px) rotate(0deg); opacity:0}
+  10%{opacity:.13} 90%{opacity:.13}
+  100%{transform:translateY(calc(-100dvh - 80px)) rotate(360deg); opacity:0}
+}
+.particle-1{left:8%;  animation-duration:9s;  animation-delay:0s;   font-size:32px}
+.particle-2{left:22%; animation-duration:12s; animation-delay:2s;   font-size:20px}
+.particle-3{left:42%; animation-duration:8s;  animation-delay:4.5s; font-size:26px}
+.particle-4{left:63%; animation-duration:11s; animation-delay:1.2s; font-size:18px}
+.particle-5{left:80%; animation-duration:10s; animation-delay:3s;   font-size:30px}
+.particle-6{left:91%; animation-duration:13s; animation-delay:5.5s; font-size:22px}
+
+/* 반짝이 */
+.sparkle{
+  position:absolute; width:6px; height:6px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 14px rgba(255,216,77,.7);
+  animation:sparklePop 2.4s ease-in-out infinite; pointer-events:none;
+}
+@keyframes sparklePop{
+  0%,100%{transform:scale(0); opacity:0}
+  40%{transform:scale(1); opacity:.7}
+  70%{transform:scale(.6); opacity:.4}
+}
+.sparkle-1{top:18%; left:15%; animation-delay:0s}
+.sparkle-2{top:30%; left:78%; animation-delay:.8s}
+.sparkle-3{top:70%; left:25%; animation-delay:1.4s}
+.sparkle-4{top:80%; left:65%; animation-delay:.3s}
+.sparkle-5{top:55%; left:88%; animation-delay:1.9s}
+
+.welcome-card{
+  width:100%; max-width:340px; position:relative; z-index:1; margin:auto;
+  display:flex; flex-direction:column; gap:14px; text-align:center; align-items:center;
+}
+.welcome-icon-wrap{
+  width:96px; height:96px; display:grid; place-items:center; border-radius:50%;
+  background:rgba(255,216,77,.10); box-shadow:0 0 34px rgba(255,216,77,.20);
+}
+.welcome-icon{
+  font-size:58px; line-height:1;
+  animation:pineBounce 2.2s infinite alternate ease-in-out;
+  filter:drop-shadow(0 8px 16px rgba(240,168,10,.45));
+}
+@keyframes pineBounce{
+  from{transform:translateY(0) rotate(-4deg) scale(1)}
+  to{transform:translateY(-12px) rotate(4deg) scale(1.05)}
+}
+.welcome-logo{width:100%; max-width:300px; margin:0 auto}
+.welcome-logo svg{display:block; width:100%; height:auto}
+.welcome-eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted)}
+.welcome-tagline{color:var(--muted); font-size:14px; font-family:"Jua",sans-serif}
+
+.welcome-best{
+  display:inline-flex; align-items:baseline; gap:6px; margin:0 auto;
+  padding:8px 16px; border-radius:999px;
+  background:rgba(255,216,77,.08); border:1px solid rgba(255,216,77,.24);
+  color:var(--gold); font-family:"Outfit",sans-serif; font-weight:800; font-size:18px;
+}
+.welcome-best-label,.welcome-best-unit{color:var(--muted); font-size:12px; font-weight:600}
+
+.how-to-play{
+  width:100%; padding:12px 14px; text-align:left; border-radius:14px;
+  background:rgba(6,41,31,.72); border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  display:flex; flex-direction:column; gap:7px;
+}
+.htp-title{color:var(--gold-soft); font-size:12px; letter-spacing:.08em}
+.htp-row{color:#bed4c5; font-size:13px; line-height:1.55; font-family:"Jua",sans-serif; display:flex; gap:8px; align-items:flex-start}
+.htp-row .dot{flex:none; width:7px; height:7px; border-radius:50%; margin-top:6px; background:var(--gold)}
+.htp-row:nth-child(3) .dot{background:var(--lime)}
+.htp-row:nth-child(4) .dot{background:var(--cyan)}
+.htp-highlight{color:var(--gold)}
+.htp-ex{font-family:"STIX Two Text",serif; font-weight:600; color:var(--gold-soft)}
+
+button{font-family:"Jua",sans-serif; cursor:pointer; border:0}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+.btn-start{
+  width:100%; padding:14px; border-radius:13px; font-size:18px; letter-spacing:.02em;
+  background:linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color:#3b2302;
+  box-shadow:0 9px 20px rgba(240,168,10,.24), inset 0 -3px 0 rgba(90,55,0,.18);
+  transition:transform .14s ease, filter .14s ease;
+}
+.btn-start:hover{transform:translateY(-2px); filter:brightness(1.04)}
+.btn-start:active{transform:translateY(1px)}
+.btn-cancel{
+  width:100%; padding:11px; border-radius:13px; font-size:14px;
+  background:rgba(255,255,255,.07); color:var(--text);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.btn-cancel:active{transform:translateY(1px)}
+
+/* ---------- HUD ---------- */
+.hud{
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:8px 14px; border-radius:14px;
+  background:var(--panel); border:1px solid var(--line);
+}
 .stat{display:flex; flex-direction:column; min-width:70px}
-.stat b{font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500; line-height:1.1}
-.stat label{font-size:11px; color:var(--muted); letter-spacing:.08em}
+.stat b{font-family:"Outfit",sans-serif; font-size:24px; font-weight:800; line-height:1.1}
+.stat label{font-size:11px; color:var(--muted); letter-spacing:.08em; font-family:"Outfit",sans-serif; font-weight:700}
 .stat.right{align-items:flex-end}
-#timen.low{color:var(--amber)} #timen.crit{color:var(--red)}
+#timen.low{color:var(--gold)} #timen.crit{color:var(--coral)}
 .circlewrap{display:flex; flex-direction:column; align-items:center; gap:2px}
 #ucircle{width:64px; height:64px}
 #gaugearc{transition:stroke-dashoffset .25s; transform:rotate(-90deg); transform-origin:32px 32px}
 #sweep{transform-origin:32px 32px; transition:transform .5s cubic-bezier(.3,1.4,.4,1)}
-#caption{font-family:"STIX Two Text",serif; font-size:12px; color:var(--mint); min-height:15px; transition:opacity .3s}
-.timebar{width:100%; height:8px; background:var(--panel); border-radius:5px; overflow:hidden}
+#caption{font-family:"STIX Two Text",serif; font-size:12px; color:var(--gold-soft); min-height:20px;
+  display:inline-flex; align-items:center; gap:3px; transition:opacity .3s}
+
+.timebar{
+  width:100%; height:10px; border-radius:6px; overflow:hidden;
+  background:rgba(6,41,31,.86); border:1px solid rgba(255,216,77,.14);
+}
+#timefill{display:block; height:100%; width:100%; border-radius:6px;
+  background:linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-soft));
+  transition:width .12s linear, background .3s}
+#timefill.low{background:linear-gradient(90deg, #f97316, var(--gold-deep), var(--gold))}
+#timefill.crit{background:linear-gradient(90deg, #dc2626, #f97316, #facc15)}
 .targetbar{width:100%; display:flex; align-items:center; gap:8px}
 .targetbar .track{flex:1; height:6px; background:var(--panel); border-radius:4px; overflow:hidden}
-#targetfill{display:block; height:100%; width:0; background:var(--mint); border-radius:4px; transition:width .25s}
-#targetlbl{font-size:11px; color:var(--muted); font-family:"IBM Plex Mono",monospace; white-space:nowrap}
-#timefill{display:block; height:100%; width:100%; background:var(--coral); border-radius:5px; transition:width .12s linear, background .3s}
-#timefill.low{background:var(--amber)} #timefill.crit{background:var(--red)}
+#targetfill{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--lime-deep), var(--lime)); border-radius:4px; transition:width .25s}
+#targetlbl{font-size:11px; color:var(--muted); font-family:"Outfit",sans-serif; font-weight:700; white-space:nowrap}
 
-#boardwrap{position:relative; width:calc(var(--t)*6 + var(--g)*5); height:calc(var(--t)*6 + var(--g)*5);
-  touch-action:none; border-radius:14px; transition:box-shadow .3s}
-#boardwrap.fever{box-shadow:0 0 0 3px var(--amber)}
-.tile{position:absolute; width:var(--t); height:var(--t); background:var(--card); border:1px solid var(--card-line);
-  border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
-  color:var(--ink); transition:top .24s cubic-bezier(.3,1.2,.4,1), left .24s, transform .16s, opacity .22s, background .1s, border-color .1s;
-  user-select:none}
+/* ---------- 보드 ---------- */
+.board-shell{
+  padding:8px; border-radius:18px;
+  background:#f2e6b8;
+  border:3px solid var(--gold);
+  box-shadow:0 12px 26px rgba(0,18,12,.28), inset 0 1px 0 rgba(255,255,255,.5);
+  transition:background .3s, box-shadow .3s, border-color .3s;
+}
+.board-shell.fever{
+  background:radial-gradient(circle, #fff1a8 0%, #ffd76b 34%, #f2e6b8 72%);
+  box-shadow:0 0 36px rgba(250,204,21,.6), inset 0 2px 8px rgba(6,41,31,.18);
+}
+#boardwrap{position:relative; width:calc(var(--t)*6 + var(--g)*5); height:calc(var(--t)*6 + var(--g)*5); touch-action:none}
+.tile{
+  position:absolute; width:var(--t); height:var(--t);
+  background:var(--ivory); border:1px solid rgba(6,41,31,.08); border-radius:10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  color:#173a29;
+  box-shadow:0 3px 0 rgba(6,41,31,.13), inset 0 1px 0 #fff;
+  transition:top .24s cubic-bezier(.3,1.2,.4,1), left .24s, transform .16s, opacity .22s, background .1s, border-color .1s, box-shadow .1s;
+  user-select:none;
+}
 .tile .fn{font-family:"STIX Two Text",serif; font-weight:600; font-size:12px; line-height:1}
-.tile .fn.sin{color:#0E7490} .tile .fn.cos{color:#B4530A}
-.tile b{font-family:"STIX Two Text",serif; font-weight:600; font-size:16px; line-height:1.15; letter-spacing:-.01em}
+.tile .fn.sin{color:#0e7490} .tile .fn.cos{color:#c2410c}
+.tile b{font-family:"STIX Two Text",serif; font-weight:600; font-size:16px; line-height:1.15; letter-spacing:-.01em;
+  display:flex; align-items:center; justify-content:center; gap:1px}
 .tile b.num{font-size:17px}
-.tile.sel{background:var(--coral-soft); border-color:var(--coral); transform:scale(1.06); z-index:2}
+
+/* 세로 분수꼴 */
+.frac{display:inline-flex; flex-direction:column; align-items:center; line-height:1.1; font-size:.68em; vertical-align:middle}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 3px .5px}
+.frac > span:last-child{padding-top:.5px}
+#status .frac,#caption .frac,.result-sub .frac,.htp-row .frac{font-size:.72em}
+.tile.sel{
+  background:var(--gold); border-color:var(--gold-deep); color:var(--deep);
+  transform:scale(1.06); z-index:2;
+  box-shadow:0 0 0 3px rgba(255,216,77,.25), 0 3px 0 #b97e08;
+}
+.tile.sel .fn.sin{color:#075e6e} .tile.sel .fn.cos{color:#9a3708}
 .tile.pop{transform:scale(0); opacity:0}
-.tile.shake{animation:shk .22s}
+.tile.shake{animation:shk .22s; background:#ffd4d4; border-color:var(--coral)}
 @keyframes shk{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 #bo{position:absolute; inset:0; pointer-events:none; z-index:3}
 #bfx{position:absolute; inset:0; pointer-events:none; z-index:4}
-.float-pts{position:absolute; transform:translate(-50%,-50%); font-family:"IBM Plex Mono",monospace; font-size:18px;
-  font-weight:500; color:var(--mint); animation:rise .9s ease-out forwards; white-space:nowrap; text-shadow:0 1px 0 rgba(0,0,0,.4)}
-.float-pts.fv{color:var(--amber)}
+.float-pts{
+  position:absolute; transform:translate(-50%,-50%);
+  font-family:"Outfit",sans-serif; font-size:19px; font-weight:800; color:#3f6212;
+  animation:rise .9s ease-out forwards; white-space:nowrap;
+  text-shadow:0 1px 0 rgba(255,255,255,.6);
+}
+.float-pts.fv{
+  color:#fff; font-size:24px;
+  text-shadow:0 0 10px var(--gold), 0 0 20px var(--gold-deep), 0 2px 5px rgba(0,0,0,.35);
+}
 @keyframes rise{to{transform:translate(-50%,-170%); opacity:0}}
 
-#status{min-height:20px; font-size:13.5px; color:var(--muted); text-align:center}
-#status.warn{color:var(--amber)} #status.good{color:var(--mint)}
+#status{min-height:24px; font-size:13.5px; color:var(--muted); text-align:center; font-family:"Jua",sans-serif;
+  display:flex; align-items:center; justify-content:center; gap:3px}
+#status .frac{font-family:"STIX Two Text",serif}
+#status.warn{color:var(--gold)} #status.good{color:var(--lime)}
 
-footer{width:calc(var(--t)*6 + var(--g)*5); display:flex; align-items:center; justify-content:space-between}
-button{font-family:"IBM Plex Sans KR",sans-serif; font-weight:500; font-size:14px; color:var(--text);
-  background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:9px 14px; cursor:pointer}
-button:active{transform:scale(.97)}
-button:focus-visible{outline:2px solid var(--coral); outline-offset:2px}
+footer{width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px}
+.btn-shuffle{
+  font-size:14px; color:var(--text); padding:9px 14px; border-radius:10px;
+  background:var(--forest-soft); box-shadow:inset 0 0 0 1px rgba(255,216,77,.22);
+  transition:transform .14s ease;
+}
+.btn-shuffle:active{transform:scale(.97)}
 .hint{font-size:12px; color:var(--muted)}
 
-.veil{position:fixed; inset:0; background:rgba(5,16,14,.85); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20}
+/* ---------- 모달 (라운드 클리어 / 게임 오버) ---------- */
+.veil{
+  position:absolute; inset:0; z-index:20;
+  background:rgba(0,18,12,.88); backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  border-radius:28px;
+}
 .veil[hidden]{display:none}
-.card{width:100%; max-width:340px; background:#0F332E; border:1px solid var(--line); border-radius:20px; padding:26px 24px; text-align:center}
-.eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted); margin-bottom:4px}
-.logo{font-family:"Jua",sans-serif; font-size:52px; line-height:1; color:var(--text)}
-.logo em{font-style:normal; color:var(--coral)}
-.sub{margin-top:8px; color:var(--muted); font-size:14px}
-.rules{margin:18px 0 22px; text-align:left; display:flex; flex-direction:column; gap:10px}
-.rules li{list-style:none; display:flex; gap:10px; align-items:flex-start; font-size:13.5px}
-.rules .dot{flex:none; width:8px; height:8px; border-radius:50%; margin-top:5px; background:var(--coral)}
-.rules li:nth-child(2) .dot{background:var(--mint)}
-.rules li:nth-child(3) .dot{background:var(--amber)}
-.rules .ex{font-family:"STIX Two Text",serif; font-weight:600}
-.cta{width:100%; font-size:17px; font-weight:700; background:var(--coral); border:none; color:#2B130B; padding:13px}
-.result{font-family:"IBM Plex Mono",monospace; font-size:44px; font-weight:500; margin:10px 0 2px; color:var(--mint)}
-.result-sub{font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.7}
+.card{
+  width:100%; max-width:330px; text-align:center;
+  background:var(--forest); border:1px solid rgba(255,216,77,.18); border-radius:20px;
+  padding:24px 22px;
+  box-shadow:0 28px 70px rgba(0,12,8,.64);
+  display:flex; flex-direction:column; gap:8px;
+}
+.card-title{
+  color:var(--gold); font-size:26px; line-height:1.15;
+  text-shadow:0 0 20px rgba(255,216,77,.28);
+}
+.card-sub{color:var(--muted); font-size:13px; font-family:"Jua",sans-serif}
+.result{
+  font-family:"Outfit",sans-serif; font-size:46px; font-weight:800; line-height:1.1;
+  color:var(--gold); margin:6px 0 0;
+}
+.result-sub{font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:10px}
+.result-sub b{color:var(--gold-soft)}
+.card .btn-start{margin-top:4px}
 
+@media (max-height:740px){
+  .welcome-overlay{min-height:calc(100dvh - 24px)}
+  .welcome-card{gap:10px}
+  .welcome-icon-wrap{width:78px; height:78px}
+  .welcome-icon{font-size:46px}
+}
 @media (prefers-reduced-motion: reduce){
   .tile,#sweep,#gaugearc,#timefill{transition:none}
   .float-pts{animation:none; opacity:0}
+  .pine-particle,.sparkle,.welcome-icon{animation:none}
 }
 </style>
 </head>
 <body>
-<main id="app">
+<div class="game-layout">
+<main class="game-container" id="game-container">
+
+  <!-- HUD -->
   <header class="hud">
     <div class="stat"><b id="score">0</b><label>점수</label></div>
     <div class="circlewrap">
       <svg id="ucircle" viewBox="0 0 64 64">
-        <line x1="4" y1="32" x2="60" y2="32" stroke="#1E4A44" stroke-width="1.5"/>
-        <line x1="32" y1="4" x2="32" y2="60" stroke="#1E4A44" stroke-width="1.5"/>
-        <circle cx="32" cy="32" r="24" fill="none" stroke="#2C5A52" stroke-width="2"/>
-        <circle id="gaugearc" cx="32" cy="32" r="29" fill="none" stroke="#FFC85C" stroke-width="3.5"
+        <line x1="4" y1="32" x2="60" y2="32" stroke="#24543f" stroke-width="1.5"/>
+        <line x1="32" y1="4" x2="32" y2="60" stroke="#24543f" stroke-width="1.5"/>
+        <circle cx="32" cy="32" r="24" fill="none" stroke="#2e6a50" stroke-width="2"/>
+        <circle id="gaugearc" cx="32" cy="32" r="29" fill="none" stroke="#94f20d" stroke-width="3.5"
           stroke-linecap="round" stroke-dasharray="182.2" stroke-dashoffset="182.2"/>
         <g id="sweep">
-          <line x1="32" y1="32" x2="56" y2="32" stroke="#FF7A59" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="56" cy="32" r="3.4" fill="#FF7A59"/>
+          <line x1="32" y1="32" x2="56" y2="32" stroke="#ffd84d" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="56" cy="32" r="3.4" fill="#ffd84d"/>
         </g>
-        <circle cx="32" cy="32" r="2" fill="#8FAAA3"/>
+        <circle cx="32" cy="32" r="2" fill="#91b69f"/>
       </svg>
       <span id="caption"></span>
     </div>
@@ -119,44 +333,107 @@ button:focus-visible{outline:2px solid var(--coral); outline-offset:2px}
   <div class="timebar"><i id="timefill"></i></div>
   <div class="targetbar"><div class="track"><i id="targetfill"></i></div><span id="targetlbl">목표 500</span></div>
 
-  <section id="boardwrap" aria-label="삼각비 타일 보드">
-    <svg id="bo"></svg>
-    <div id="bfx"></div>
-  </section>
+  <!-- 보드 -->
+  <div class="board-shell" id="boardshell">
+    <section id="boardwrap" aria-label="삼각비 타일 보드">
+      <svg id="bo"></svg>
+      <div id="bfx"></div>
+    </section>
+  </div>
 
   <p id="status">같은 값끼리 드래그로 연결하세요</p>
 
   <footer>
-    <button id="shuffle" type="button">섞기 −2초</button>
+    <button id="shuffle" class="btn-shuffle" type="button">섞기 −2초</button>
     <span class="hint">3개 이상 잇고 손을 떼면 팡</span>
   </footer>
 
-  <div class="veil" id="veil">
-    <div class="card" id="startcard">
-      <p class="eyebrow">수열팡 시리즈</p>
-      <div class="logo">삼각<em>팡</em></div>
-      <p class="sub">값이 같으면 생김새가 달라도 이어져요</p>
-      <ul class="rules">
-        <li><span class="dot"></span><span><span class="ex">sin 30°</span>, <span class="ex">cos 60°</span>, <span class="ex">1/2</span> — 전부 같은 값, 전부 한 사슬</span></li>
-        <li><span class="dot"></span><span>제한 시간 안에 목표 점수를 넘기면 다음 라운드 — 남은 시간은 보너스 점수</span></li>
-        <li><span class="dot"></span><span>라운드마다 표기가 늘어요: 1사분면 → 호도법 → 둔각 → 전 범위</span></li>
-      </ul>
-      <button class="cta" id="startbtn" type="button">시작</button>
-    </div>
-    <div class="card" id="overcard" hidden>
-      <p class="sub">시간 종료</p>
-      <div class="result" id="finalscore">0</div>
-      <p class="result-sub" id="finalsub"></p>
-      <button class="cta" id="retrybtn" type="button">다시 하기</button>
-    </div>
-    <div class="card" id="roundcard" hidden>
-      <p class="sub" id="rtitle">라운드 클리어</p>
-      <div class="result" id="rbonus">+0</div>
-      <p class="result-sub" id="rnext"></p>
-      <button class="cta" id="nextbtn" type="button">다음 라운드</button>
+  <!-- 웰컴 오버레이 (메인 화면) -->
+  <div class="welcome-overlay" id="welcome">
+    <span class="pine-particle particle-1">🍍</span>
+    <span class="pine-particle particle-2">🍍</span>
+    <span class="pine-particle particle-3">🍍</span>
+    <span class="pine-particle particle-4">🍍</span>
+    <span class="pine-particle particle-5">🍍</span>
+    <span class="pine-particle particle-6">🍍</span>
+    <span class="sparkle sparkle-1"></span>
+    <span class="sparkle sparkle-2"></span>
+    <span class="sparkle sparkle-3"></span>
+    <span class="sparkle sparkle-4"></span>
+    <span class="sparkle sparkle-5"></span>
+
+    <div class="welcome-card">
+      <div class="welcome-icon-wrap"><span class="welcome-icon" role="img" aria-label="pineapple">🍍</span></div>
+      <p class="welcome-eyebrow">수열팡 시리즈 2탄</p>
+      <h1 class="welcome-logo" aria-label="삼각팡">
+        <svg viewBox="0 0 440 170" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-gold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffe58a"/>
+              <stop offset="100%" stop-color="#f0a80a"/>
+            </linearGradient>
+          </defs>
+          <path d="M75 96 C 130 44, 185 44, 220 88 S 310 132, 358 80"
+            stroke="rgba(255,216,77,0.5)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <g font-family="'Bagel Fat One','Jua',sans-serif" font-size="56" text-anchor="middle">
+            <g transform="translate(88,88) rotate(-6)">
+              <rect x="-46" y="-46" width="92" height="92" rx="18" fill="#fffbea" stroke="#0b3a2b" stroke-width="5"/>
+              <text y="20" fill="#14532d">삼</text>
+              <text x="30" y="-26" font-family="'STIX Two Text',serif" font-weight="600" font-size="16" fill="#c2410c">30°</text>
+            </g>
+            <g transform="translate(208,82) rotate(4)">
+              <rect x="-46" y="-46" width="92" height="92" rx="18" fill="#fffbea" stroke="#0b3a2b" stroke-width="5"/>
+              <text y="20" fill="#14532d">각</text>
+              <text x="30" y="-26" font-family="'STIX Two Text',serif" font-weight="600" font-size="16" fill="#0e7490">π/4</text>
+            </g>
+            <g transform="translate(340,80) rotate(7)">
+              <path fill="#ffd84d" opacity="0.9" transform="scale(1.35)"
+                d="M0-58 L11-25 L41-41 L24-12 L58-6 L25 5 L41 36 L11 20 L3 57 L-9 24 L-39 38 L-24 9 L-57 1 L-25-9 L-38-39 L-11-22 Z"/>
+              <rect x="-50" y="-50" width="100" height="100" rx="20" fill="url(#logo-gold)" stroke="#0b3a2b" stroke-width="6"/>
+              <text y="22" font-size="60" fill="#06291f">팡</text>
+              <text x="34" y="-28" font-family="'STIX Two Text',serif" font-weight="600" font-size="17" fill="#14532d">½</text>
+            </g>
+          </g>
+        </svg>
+      </h1>
+      <p class="welcome-tagline">값이 같으면 생김새가 달라도 이어져요</p>
+
+      <div class="welcome-best">
+        <span class="welcome-best-label">최고 기록</span>
+        <span id="welcome-best-val">0</span>
+        <span class="welcome-best-unit">점</span>
+      </div>
+
+      <div class="how-to-play">
+        <div class="htp-title">플레이 방법</div>
+        <div class="htp-row"><span class="dot"></span><span><span class="htp-ex">sin 30°</span>, <span class="htp-ex">cos 60°</span>, <span class="htp-ex"><span class="frac"><span>1</span><span>2</span></span></span> — 전부 같은 값, 전부 한 사슬</span></div>
+        <div class="htp-row"><span class="dot"></span><span>제한 시간 안에 <span class="htp-highlight">목표 점수</span>를 넘기면 다음 라운드 — 남은 시간은 보너스</span></div>
+        <div class="htp-row"><span class="dot"></span><span>라운드마다 표기가 늘어요: 1사분면 → 호도법 → 둔각 → 전 범위</span></div>
+      </div>
+
+      <button class="btn-start" id="startbtn" type="button">팡 시작!</button>
     </div>
   </div>
+
+  <!-- 모달 -->
+  <div class="veil" id="veil" hidden>
+    <div class="card" id="overcard" hidden>
+      <h2 class="card-title">타임 오버!</h2>
+      <div class="result" id="finalscore">0</div>
+      <p class="result-sub" id="finalsub"></p>
+      <button class="btn-start" id="retrybtn" type="button">다시 하기</button>
+      <button class="btn-cancel" id="homebtn" type="button">메인 화면으로 돌아가기</button>
+    </div>
+    <div class="card" id="roundcard" hidden>
+      <h2 class="card-title" id="rtitle">라운드 클리어</h2>
+      <div class="result" id="rbonus">+0</div>
+      <p class="result-sub" id="rnext"></p>
+      <button class="btn-start" id="nextbtn" type="button">다음 라운드</button>
+    </div>
+  </div>
+
 </main>
+</div>
 
 <script>
 (() => {
@@ -177,6 +454,13 @@ for (const d in SINV){
 }
 ['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1'].forEach(v => EXPRS.push({fn:null, arg:v, deg:null, val:v, rad:false}));
 const isNeg = v => v.startsWith('−');
+
+/* a/b 꼴을 세로 분수 마크업으로 변환 (예: 1/2, √3/2, 11π/6, −√2/2) */
+const fmt = s => String(s).replace(/(−?)([0-9√π]+)\/([0-9]+)/g,
+  (_, sg, top, bot) => `${sg}<span class="frac"><span>${top}</span><span>${bot}</span></span>`);
+const tileHTML = e => e.fn
+  ? `<span class="fn ${e.fn}">${e.fn}</span><b>${fmt(e.arg)}</b>`
+  : `<b class="num">${fmt(e.arg)}</b>`;
 
 /* ---------- rounds ---------- */
 const Q1 = [0,30,45,60,90];
@@ -205,8 +489,9 @@ function roundPool(){
 }
 
 /* ---------- state ---------- */
+const BEST_KEY = 'trigpang-best';
 let grid = [], idc = 0, chain = [], chainVal = null;
-let score = 0, best = 0, pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
+let score = 0, best = +(localStorage.getItem(BEST_KEY) || 0), pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
 let gauge = 0, fever = false, feverT = 0, hot = [];
 let time = 40, playing = false, locked = false, dragging = false, raf = 0, prev = 0;
 
@@ -229,9 +514,7 @@ function makeTile(r, c, fromAbove){
   const t = { id: idc++, r, c, expr: e, val: e.val, el: document.createElement('div') };
   const el = t.el;
   el.className = 'tile';
-  el.innerHTML = e.fn
-    ? `<span class="fn ${e.fn}">${e.fn}</span><b>${e.arg}</b>`
-    : `<b class="num">${e.arg}</b>`;
+  el.innerHTML = tileHTML(e);
   el.style.left = posX(c) + 'px';
   el.style.top = (fromAbove ? posY(r) - (fromAbove)*(tpx()+6) - 20 : posY(r)) + 'px';
   $('boardwrap').appendChild(el);
@@ -276,7 +559,7 @@ function ensureMoves(silent){
     for (let r=0;r<N;r++) for (let c=0;c<N;c++){
       const t = grid[r][c], e = vals[k++];
       t.expr = e; t.val = e.val;
-      t.el.innerHTML = e.fn ? `<span class="fn ${e.fn}">${e.fn}</span><b>${e.arg}</b>` : `<b class="num">${e.arg}</b>`;
+      t.el.innerHTML = tileHTML(e);
     }
     if (!silent) say('가능한 조합이 없어 자동으로 섞었어요', 'warn');
   }
@@ -299,7 +582,8 @@ function drawChainLine(){
   let h = '';
   if (chain.length > 1){
     const pts = chain.map(t => (posX(t.c)+tpx()/2)+','+(posY(t.r)+tpx()/2)).join(' ');
-    h = `<polyline points="${pts}" fill="none" stroke="#FF7A59" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>`;
+    h = `<polyline points="${pts}" fill="none" stroke="#f0a80a" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" opacity=".3"/>`
+      + `<polyline points="${pts}" fill="none" stroke="#ffd84d" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity=".75"/>`;
   }
   $('bo').innerHTML = h;
 }
@@ -325,7 +609,7 @@ function tryAdd(t){
 }
 function sayChain(){
   if (!chain.length){ say('같은 값끼리 드래그로 연결하세요'); return; }
-  say(`${chainVal} 사슬 · ${chain.length}개${chain.length>=3 ? ' — 놓으면 팡' : ''}`, chain.length>=3 ? 'good' : '');
+  say(`${fmt(chainVal)} 사슬 · ${chain.length}개${chain.length>=3 ? ' — 놓으면 팡' : ''}`, chain.length>=3 ? 'good' : '');
 }
 bw.addEventListener('pointerdown', e => {
   if (!playing || locked) return;
@@ -361,7 +645,7 @@ function doPop(){
   $('bfx').appendChild(fl); setTimeout(()=>fl.remove(), 950);
   const ex = chain.find(t => t.expr.deg !== null) || chain[0];
   sweepTo(ex);
-  say(`${chainVal} × ${n} 팡  +${pts}`, 'good');
+  say(`${fmt(chainVal)} × ${n} 팡  +${pts}`, 'good');
   chain.forEach(t => { t.el.classList.add('pop'); grid[t.r][t.c] = null; });
   const popped = chain.slice();
   chain = []; chainVal = null; drawChainLine();
@@ -395,7 +679,7 @@ function sweepTo(t){
   if (t.expr.deg === null) return;
   $('sweep').style.transform = `rotate(${-t.expr.deg}deg)`;
   const cap = $('caption');
-  cap.textContent = t.expr.fn ? `${t.expr.fn} ${t.expr.arg} = ${t.val}` : '';
+  cap.innerHTML = t.expr.fn ? `${t.expr.fn} ${fmt(t.expr.arg)} = ${fmt(t.val)}` : '';
   cap.style.opacity = 1;
   clearTimeout(cap._t); cap._t = setTimeout(()=>cap.style.opacity=.45, 1800);
 }
@@ -408,16 +692,16 @@ function startFever(){
   fever = true; feverT = FEVER_LEN;
   const posVals = [...new Set(roundPool().filter(e => !isNeg(e.val)).map(e => e.val))];
   hot = posVals.sort(()=>Math.random()-.5).slice(0,4);
-  $('boardwrap').classList.add('fever');
+  $('boardshell').classList.add('fever');
   say('피버! 점수 2배', 'warn');
 }
 function endFever(){
   fever = false; gauge = 0; drawGauge(0);
-  $('boardwrap').classList.remove('fever');
+  $('boardshell').classList.remove('fever');
 }
 
 /* ---------- status / timer ---------- */
-function say(msg, cls){ const s = $('status'); s.textContent = msg; s.className = cls || ''; }
+function say(msg, cls){ const s = $('status'); s.innerHTML = msg; s.className = cls || ''; }
 function tick(ts){
   if (!playing) return;
   if (prev){
@@ -444,6 +728,10 @@ function drawTarget(){
   $('targetfill').style.width = Math.min(roundScore/cfg.target*100, 100) + '%';
   $('targetlbl').textContent = '목표 ' + cfg.target;
 }
+function saveBest(){
+  if (score > best){ best = score; localStorage.setItem(BEST_KEY, best); }
+  $('welcome-best-val').textContent = best;
+}
 function startRound(){
   const cfg = roundCfg();
   roundScore = 0; time = cfg.time; locked = false; chain = []; chainVal = null;
@@ -458,33 +746,41 @@ function roundClear(){
   clearChain();
   const bonus = Math.ceil(time) * 10;
   score += bonus; $('score').textContent = score;
-  $('rtitle').textContent = `라운드 ${roundIdx+1} 클리어`;
+  $('rtitle').textContent = `라운드 ${roundIdx+1} 클리어!`;
   roundIdx++;
   const next = roundCfg();
   $('rbonus').textContent = '+' + bonus;
-  $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 — <b>${next.intro}</b><br>${next.detail}<br>목표 ${next.target}점 · ${next.time}초`;
-  $('startcard').hidden = true; $('overcard').hidden = true; $('roundcard').hidden = false;
+  $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 — <b>${next.intro}</b><br>${fmt(next.detail)}<br>목표 ${next.target}점 · ${next.time}초`;
+  $('overcard').hidden = true; $('roundcard').hidden = false;
   $('veil').hidden = false;
 }
 function startGame(){
   score = 0; pops = 0; longest = 0; gauge = 0; roundIdx = 0;
   fever = false; feverT = 0; hot = [];
-  $('score').textContent = '0'; drawGauge(0); $('boardwrap').classList.remove('fever');
+  $('score').textContent = '0'; drawGauge(0); $('boardshell').classList.remove('fever');
   $('caption').textContent = '';
-  $('overcard').hidden = true; $('roundcard').hidden = true;
+  $('overcard').hidden = true; $('roundcard').hidden = true; $('veil').hidden = true;
+  $('welcome').classList.add('hide');
   startRound();
 }
 function gameOver(){
   playing = false; dragging = false; cancelAnimationFrame(raf);
   clearChain();
-  best = Math.max(best, score);
+  saveBest();
   $('finalscore').textContent = score;
-  $('finalsub').innerHTML = `라운드 ${roundIdx+1}에서 종료 · 최고 기록 ${best}<br>팡 ${pops}회 · 최장 사슬 ${longest}개`;
-  $('startcard').hidden = true; $('roundcard').hidden = true; $('overcard').hidden = false;
+  $('finalsub').innerHTML = `라운드 ${roundIdx+1}에서 종료 · 최고 기록 <b>${best}</b><br>팡 ${pops}회 · 최장 사슬 ${longest}개`;
+  $('roundcard').hidden = true; $('overcard').hidden = false;
   $('veil').hidden = false;
+}
+function goHome(){
+  $('veil').hidden = true;
+  $('overcard').hidden = true; $('roundcard').hidden = true;
+  saveBest();
+  $('welcome').classList.remove('hide');
 }
 $('startbtn').addEventListener('click', startGame);
 $('retrybtn').addEventListener('click', startGame);
+$('homebtn').addEventListener('click', goHome);
 $('nextbtn').addEventListener('click', () => { $('roundcard').hidden = true; startRound(); });
 $('shuffle').addEventListener('click', () => {
   if (!playing || locked) return;
@@ -511,6 +807,7 @@ window.addEventListener('resize', () => {
   drawChainLine();
 });
 
+$('welcome-best-val').textContent = best;
 buildBoard();
 })();
 </script>
