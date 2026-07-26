@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>삼각팡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=STIX+Two+Text:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C2B28; --panel:#113732; --line:#1E4A44;
+  --card:#F6EFE3; --card-line:#E2D6C2; --ink:#20302D; --ink-soft:#5C6B67;
+  --coral:#FF7A59; --coral-soft:#FFDCCF; --amber:#FFC85C; --mint:#4ADE9E; --red:#FF6B6B;
+  --text:#F1F5F2; --muted:#8FAAA3;
+  --t: min(calc((100vw - 60px)/6), 58px); --g: 6px;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg); color:var(--text); font-family:"IBM Plex Sans KR",sans-serif; font-size:15px;
+  display:flex; justify-content:center; overflow-x:hidden}
+#app{width:100%; max-width:440px; padding:14px 14px 22px; display:flex; flex-direction:column; align-items:center; gap:10px}
+
+.hud{width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px}
+.stat{display:flex; flex-direction:column; min-width:70px}
+.stat b{font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:500; line-height:1.1}
+.stat label{font-size:11px; color:var(--muted); letter-spacing:.08em}
+.stat.right{align-items:flex-end}
+#timen.low{color:var(--amber)} #timen.crit{color:var(--red)}
+.circlewrap{display:flex; flex-direction:column; align-items:center; gap:2px}
+#ucircle{width:64px; height:64px}
+#gaugearc{transition:stroke-dashoffset .25s; transform:rotate(-90deg); transform-origin:32px 32px}
+#sweep{transform-origin:32px 32px; transition:transform .5s cubic-bezier(.3,1.4,.4,1)}
+#caption{font-family:"STIX Two Text",serif; font-size:12px; color:var(--mint); min-height:15px; transition:opacity .3s}
+.timebar{width:100%; height:8px; background:var(--panel); border-radius:5px; overflow:hidden}
+.targetbar{width:100%; display:flex; align-items:center; gap:8px}
+.targetbar .track{flex:1; height:6px; background:var(--panel); border-radius:4px; overflow:hidden}
+#targetfill{display:block; height:100%; width:0; background:var(--mint); border-radius:4px; transition:width .25s}
+#targetlbl{font-size:11px; color:var(--muted); font-family:"IBM Plex Mono",monospace; white-space:nowrap}
+#timefill{display:block; height:100%; width:100%; background:var(--coral); border-radius:5px; transition:width .12s linear, background .3s}
+#timefill.low{background:var(--amber)} #timefill.crit{background:var(--red)}
+
+#boardwrap{position:relative; width:calc(var(--t)*6 + var(--g)*5); height:calc(var(--t)*6 + var(--g)*5);
+  touch-action:none; border-radius:14px; transition:box-shadow .3s}
+#boardwrap.fever{box-shadow:0 0 0 3px var(--amber)}
+.tile{position:absolute; width:var(--t); height:var(--t); background:var(--card); border:1px solid var(--card-line);
+  border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  color:var(--ink); transition:top .24s cubic-bezier(.3,1.2,.4,1), left .24s, transform .16s, opacity .22s, background .1s, border-color .1s;
+  user-select:none}
+.tile .fn{font-family:"STIX Two Text",serif; font-weight:600; font-size:12px; line-height:1}
+.tile .fn.sin{color:#0E7490} .tile .fn.cos{color:#B4530A}
+.tile b{font-family:"STIX Two Text",serif; font-weight:600; font-size:16px; line-height:1.15; letter-spacing:-.01em}
+.tile b.num{font-size:17px}
+.tile.sel{background:var(--coral-soft); border-color:var(--coral); transform:scale(1.06); z-index:2}
+.tile.pop{transform:scale(0); opacity:0}
+.tile.shake{animation:shk .22s}
+@keyframes shk{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+#bo{position:absolute; inset:0; pointer-events:none; z-index:3}
+#bfx{position:absolute; inset:0; pointer-events:none; z-index:4}
+.float-pts{position:absolute; transform:translate(-50%,-50%); font-family:"IBM Plex Mono",monospace; font-size:18px;
+  font-weight:500; color:var(--mint); animation:rise .9s ease-out forwards; white-space:nowrap; text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.float-pts.fv{color:var(--amber)}
+@keyframes rise{to{transform:translate(-50%,-170%); opacity:0}}
+
+#status{min-height:20px; font-size:13.5px; color:var(--muted); text-align:center}
+#status.warn{color:var(--amber)} #status.good{color:var(--mint)}
+
+footer{width:calc(var(--t)*6 + var(--g)*5); display:flex; align-items:center; justify-content:space-between}
+button{font-family:"IBM Plex Sans KR",sans-serif; font-weight:500; font-size:14px; color:var(--text);
+  background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:9px 14px; cursor:pointer}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:2px solid var(--coral); outline-offset:2px}
+.hint{font-size:12px; color:var(--muted)}
+
+.veil{position:fixed; inset:0; background:rgba(5,16,14,.85); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20}
+.veil[hidden]{display:none}
+.card{width:100%; max-width:340px; background:#0F332E; border:1px solid var(--line); border-radius:20px; padding:26px 24px; text-align:center}
+.eyebrow{font-size:11px; letter-spacing:.22em; color:var(--muted); margin-bottom:4px}
+.logo{font-family:"Jua",sans-serif; font-size:52px; line-height:1; color:var(--text)}
+.logo em{font-style:normal; color:var(--coral)}
+.sub{margin-top:8px; color:var(--muted); font-size:14px}
+.rules{margin:18px 0 22px; text-align:left; display:flex; flex-direction:column; gap:10px}
+.rules li{list-style:none; display:flex; gap:10px; align-items:flex-start; font-size:13.5px}
+.rules .dot{flex:none; width:8px; height:8px; border-radius:50%; margin-top:5px; background:var(--coral)}
+.rules li:nth-child(2) .dot{background:var(--mint)}
+.rules li:nth-child(3) .dot{background:var(--amber)}
+.rules .ex{font-family:"STIX Two Text",serif; font-weight:600}
+.cta{width:100%; font-size:17px; font-weight:700; background:var(--coral); border:none; color:#2B130B; padding:13px}
+.result{font-family:"IBM Plex Mono",monospace; font-size:44px; font-weight:500; margin:10px 0 2px; color:var(--mint)}
+.result-sub{font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.7}
+
+@media (prefers-reduced-motion: reduce){
+  .tile,#sweep,#gaugearc,#timefill{transition:none}
+  .float-pts{animation:none; opacity:0}
+}
+</style>
+</head>
+<body>
+<main id="app">
+  <header class="hud">
+    <div class="stat"><b id="score">0</b><label>점수</label></div>
+    <div class="circlewrap">
+      <svg id="ucircle" viewBox="0 0 64 64">
+        <line x1="4" y1="32" x2="60" y2="32" stroke="#1E4A44" stroke-width="1.5"/>
+        <line x1="32" y1="4" x2="32" y2="60" stroke="#1E4A44" stroke-width="1.5"/>
+        <circle cx="32" cy="32" r="24" fill="none" stroke="#2C5A52" stroke-width="2"/>
+        <circle id="gaugearc" cx="32" cy="32" r="29" fill="none" stroke="#FFC85C" stroke-width="3.5"
+          stroke-linecap="round" stroke-dasharray="182.2" stroke-dashoffset="182.2"/>
+        <g id="sweep">
+          <line x1="32" y1="32" x2="56" y2="32" stroke="#FF7A59" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="56" cy="32" r="3.4" fill="#FF7A59"/>
+        </g>
+        <circle cx="32" cy="32" r="2" fill="#8FAAA3"/>
+      </svg>
+      <span id="caption"></span>
+    </div>
+    <div class="stat right"><b id="timen">40.0</b><label id="roundlbl">라운드 1</label></div>
+  </header>
+  <div class="timebar"><i id="timefill"></i></div>
+  <div class="targetbar"><div class="track"><i id="targetfill"></i></div><span id="targetlbl">목표 500</span></div>
+
+  <section id="boardwrap" aria-label="삼각비 타일 보드">
+    <svg id="bo"></svg>
+    <div id="bfx"></div>
+  </section>
+
+  <p id="status">같은 값끼리 드래그로 연결하세요</p>
+
+  <footer>
+    <button id="shuffle" type="button">섞기 −2초</button>
+    <span class="hint">3개 이상 잇고 손을 떼면 팡</span>
+  </footer>
+
+  <div class="veil" id="veil">
+    <div class="card" id="startcard">
+      <p class="eyebrow">수열팡 시리즈</p>
+      <div class="logo">삼각<em>팡</em></div>
+      <p class="sub">값이 같으면 생김새가 달라도 이어져요</p>
+      <ul class="rules">
+        <li><span class="dot"></span><span><span class="ex">sin 30°</span>, <span class="ex">cos 60°</span>, <span class="ex">1/2</span> — 전부 같은 값, 전부 한 사슬</span></li>
+        <li><span class="dot"></span><span>제한 시간 안에 목표 점수를 넘기면 다음 라운드 — 남은 시간은 보너스 점수</span></li>
+        <li><span class="dot"></span><span>라운드마다 표기가 늘어요: 1사분면 → 호도법 → 둔각 → 전 범위</span></li>
+      </ul>
+      <button class="cta" id="startbtn" type="button">시작</button>
+    </div>
+    <div class="card" id="overcard" hidden>
+      <p class="sub">시간 종료</p>
+      <div class="result" id="finalscore">0</div>
+      <p class="result-sub" id="finalsub"></p>
+      <button class="cta" id="retrybtn" type="button">다시 하기</button>
+    </div>
+    <div class="card" id="roundcard" hidden>
+      <p class="sub" id="rtitle">라운드 클리어</p>
+      <div class="result" id="rbonus">+0</div>
+      <p class="result-sub" id="rnext"></p>
+      <button class="cta" id="nextbtn" type="button">다음 라운드</button>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+const N = 6, GAUGE_MAX = 16, FEVER_LEN = 8;
+const $ = id => document.getElementById(id);
+
+/* ---------- tile data: sin·cos 특수각, 육십분법 + 호도법 ---------- */
+const SINV = {0:'0',30:'1/2',45:'√2/2',60:'√3/2',90:'1',120:'√3/2',135:'√2/2',150:'1/2',180:'0',210:'−1/2',225:'−√2/2',240:'−√3/2',270:'−1',300:'−√3/2',315:'−√2/2',330:'−1/2'};
+const COSV = {0:'1',30:'√3/2',45:'√2/2',60:'1/2',90:'0',120:'−1/2',135:'−√2/2',150:'−√3/2',180:'−1',210:'−√3/2',225:'−√2/2',240:'−1/2',270:'0',300:'1/2',315:'√2/2',330:'√3/2'};
+const RAD = {0:'0',30:'π/6',45:'π/4',60:'π/3',90:'π/2',120:'2π/3',135:'3π/4',150:'5π/6',180:'π',210:'7π/6',225:'5π/4',240:'4π/3',270:'3π/2',300:'5π/3',315:'7π/4',330:'11π/6'};
+const EXPRS = [];
+for (const d in SINV){
+  const deg = +d;
+  EXPRS.push({fn:'sin', arg:d+'°', deg, val:SINV[d], rad:false});
+  EXPRS.push({fn:'cos', arg:d+'°', deg, val:COSV[d], rad:false});
+  EXPRS.push({fn:'sin', arg:RAD[d], deg, val:SINV[d], rad:true});
+  EXPRS.push({fn:'cos', arg:RAD[d], deg, val:COSV[d], rad:true});
+}
+['0','1/2','√2/2','√3/2','1','−1/2','−√2/2','−√3/2','−1'].forEach(v => EXPRS.push({fn:null, arg:v, deg:null, val:v, rad:false}));
+const isNeg = v => v.startsWith('−');
+
+/* ---------- rounds ---------- */
+const Q1 = [0,30,45,60,90];
+const HALF = [0,30,45,60,90,120,135,150,180];
+const ALLDEG = Object.keys(SINV).map(Number);
+const ROUNDS = [
+  {angles:Q1,   rad:false, target:500,  time:40, intro:'1사분면 · 육십분법', detail:'sin 30° = 1/2 부터 몸풀기'},
+  {angles:Q1,   rad:true,  target:900,  time:40, intro:'호도법 등장', detail:'π/6 = 30° — 같은 각, 다른 표기'},
+  {angles:HALF, rad:true,  target:1300, time:45, intro:'둔각 등장', detail:'cos 120° = −1/2 — 음수 값 주의'},
+  {angles:ALLDEG, rad:true, target:1800, time:45, intro:'전 범위', detail:'3·4사분면까지 — 일반각 총력전'},
+];
+function roundCfg(){
+  if (roundIdx < ROUNDS.length) return ROUNDS[roundIdx];
+  const k = roundIdx - ROUNDS.length + 1;
+  return {angles:ALLDEG, rad:true, time:45,
+    target: Math.round(1800 * Math.pow(1.35, k) / 100) * 100,
+    intro:'전 범위 · 목표 상승', detail:'어디까지 가나 보자'};
+}
+function roundPool(){
+  const cfg = roundCfg();
+  const vals = new Set();
+  EXPRS.forEach(e => { if (e.fn && cfg.angles.includes(e.deg)) vals.add(e.val); });
+  return EXPRS.filter(e => e.fn
+    ? (cfg.angles.includes(e.deg) && (cfg.rad || !e.rad))
+    : vals.has(e.val));
+}
+
+/* ---------- state ---------- */
+let grid = [], idc = 0, chain = [], chainVal = null;
+let score = 0, best = 0, pops = 0, longest = 0, roundIdx = 0, roundScore = 0;
+let gauge = 0, fever = false, feverT = 0, hot = [];
+let time = 40, playing = false, locked = false, dragging = false, raf = 0, prev = 0;
+
+function tpx(){ const el = $('boardwrap'); return (el.clientWidth - 5*6)/6; }
+const posX = c => c * (tpx() + 6);
+const posY = r => r * (tpx() + 6);
+
+/* ---------- spawn ---------- */
+function pool(){
+  const base = roundPool();
+  if (fever) return base.filter(e => hot.includes(e.val));
+  const p = [];
+  base.forEach(e => { p.push(e); if (!isNeg(e.val)) p.push(e); });
+  return p;
+}
+function spawnExpr(){ const p = pool(); return p[Math.floor(Math.random()*p.length)]; }
+
+function makeTile(r, c, fromAbove){
+  const e = spawnExpr();
+  const t = { id: idc++, r, c, expr: e, val: e.val, el: document.createElement('div') };
+  const el = t.el;
+  el.className = 'tile';
+  el.innerHTML = e.fn
+    ? `<span class="fn ${e.fn}">${e.fn}</span><b>${e.arg}</b>`
+    : `<b class="num">${e.arg}</b>`;
+  el.style.left = posX(c) + 'px';
+  el.style.top = (fromAbove ? posY(r) - (fromAbove)*(tpx()+6) - 20 : posY(r)) + 'px';
+  $('boardwrap').appendChild(el);
+  if (fromAbove) requestAnimationFrame(() => requestAnimationFrame(() => { el.style.top = posY(r) + 'px'; }));
+  return t;
+}
+
+function buildBoard(){
+  $('boardwrap').querySelectorAll('.tile').forEach(n => n.remove());
+  grid = [];
+  for (let r=0; r<N; r++){ grid[r] = []; for (let c=0; c<N; c++) grid[r][c] = makeTile(r, c, 0); }
+  ensureMoves(true);
+}
+
+/* ---------- move detection ---------- */
+function hasMove(){
+  const seen = new Set();
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+    const t = grid[r][c]; if (!t || seen.has(t.id)) continue;
+    let count = 0; const stack = [t]; const comp = new Set([t.id]);
+    while (stack.length){
+      const u = stack.pop(); count++;
+      for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++){
+        const nr=u.r+dr, nc=u.c+dc;
+        if (nr<0||nr>=N||nc<0||nc>=N||(dr===0&&dc===0)) continue;
+        const v = grid[nr][nc];
+        if (v && v.val===t.val && !comp.has(v.id)){ comp.add(v.id); stack.push(v); }
+      }
+    }
+    comp.forEach(id => seen.add(id));
+    if (count >= 3) return true;
+  }
+  return false;
+}
+function ensureMoves(silent){
+  let guard = 0;
+  while (!hasMove() && guard++ < 20){
+    const vals = [];
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++) vals.push(grid[r][c].expr);
+    for (let i=vals.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [vals[i],vals[j]]=[vals[j],vals[i]]; }
+    let k=0;
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+      const t = grid[r][c], e = vals[k++];
+      t.expr = e; t.val = e.val;
+      t.el.innerHTML = e.fn ? `<span class="fn ${e.fn}">${e.fn}</span><b>${e.arg}</b>` : `<b class="num">${e.arg}</b>`;
+    }
+    if (!silent) say('가능한 조합이 없어 자동으로 섞었어요', 'warn');
+  }
+}
+
+/* ---------- chain / drag ---------- */
+const bw = $('boardwrap');
+function cellAt(x, y){
+  const rect = bw.getBoundingClientRect();
+  const s = tpx() + 6;
+  const c = Math.floor((x-rect.left)/s), r = Math.floor((y-rect.top)/s);
+  if (r<0||r>=N||c<0||c>=N) return null;
+  const cx = rect.left + posX(c) + tpx()/2, cy = rect.top + posY(r) + tpx()/2;
+  if (Math.hypot(x-cx, y-cy) > tpx()*0.46) return null;
+  return grid[r][c];
+}
+function drawChainLine(){
+  const w = bw.clientWidth;
+  $('bo').setAttribute('viewBox', `0 0 ${w} ${w}`);
+  let h = '';
+  if (chain.length > 1){
+    const pts = chain.map(t => (posX(t.c)+tpx()/2)+','+(posY(t.r)+tpx()/2)).join(' ');
+    h = `<polyline points="${pts}" fill="none" stroke="#FF7A59" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>`;
+  }
+  $('bo').innerHTML = h;
+}
+function setSel(t, on){ t.el.classList.toggle('sel', on); }
+function clearChain(){
+  chain.forEach(t => setSel(t, false));
+  chain = []; chainVal = null; drawChainLine();
+}
+function tryAdd(t){
+  if (!t || locked) return;
+  if (chain.length && t === chain[chain.length-2]){
+    setSel(chain.pop(), false); drawChainLine(); sayChain(); return;
+  }
+  if (chain.includes(t)) return;
+  if (!chain.length){ chain = [t]; chainVal = t.val; setSel(t, true); drawChainLine(); sayChain(); return; }
+  const last = chain[chain.length-1];
+  if (Math.abs(last.r-t.r) > 1 || Math.abs(last.c-t.c) > 1) return;
+  if (t.val !== chainVal){
+    t.el.classList.add('shake'); setTimeout(()=>t.el.classList.remove('shake'), 230);
+    return;
+  }
+  chain.push(t); setSel(t, true); drawChainLine(); sayChain();
+}
+function sayChain(){
+  if (!chain.length){ say('같은 값끼리 드래그로 연결하세요'); return; }
+  say(`${chainVal} 사슬 · ${chain.length}개${chain.length>=3 ? ' — 놓으면 팡' : ''}`, chain.length>=3 ? 'good' : '');
+}
+bw.addEventListener('pointerdown', e => {
+  if (!playing || locked) return;
+  dragging = true; bw.setPointerCapture(e.pointerId);
+  tryAdd(cellAt(e.clientX, e.clientY));
+});
+bw.addEventListener('pointermove', e => { if (dragging) tryAdd(cellAt(e.clientX, e.clientY)); });
+function release(){
+  if (!dragging) return;
+  dragging = false;
+  if (!playing || locked) { clearChain(); return; }
+  if (chain.length >= 3) doPop();
+  else { clearChain(); sayChain(); }
+}
+bw.addEventListener('pointerup', release);
+bw.addEventListener('pointercancel', release);
+
+/* ---------- pop / gravity ---------- */
+function doPop(){
+  locked = true;
+  const n = chain.length;
+  const mult = fever ? 2 : 1;
+  const pts = n*n*10*mult;
+  score += pts; roundScore += pts; pops++; longest = Math.max(longest, n);
+  $('score').textContent = score;
+  drawTarget();
+  if (!fever){ gauge = Math.min(gauge + n, GAUGE_MAX); drawGauge(gauge/GAUGE_MAX); }
+  const mid = chain[Math.floor(n/2)];
+  const fl = document.createElement('div');
+  fl.className = 'float-pts' + (fever ? ' fv' : '');
+  fl.textContent = '+' + pts;
+  fl.style.left = (posX(mid.c)+tpx()/2)+'px'; fl.style.top = (posY(mid.r)+tpx()/2)+'px';
+  $('bfx').appendChild(fl); setTimeout(()=>fl.remove(), 950);
+  const ex = chain.find(t => t.expr.deg !== null) || chain[0];
+  sweepTo(ex);
+  say(`${chainVal} × ${n} 팡  +${pts}`, 'good');
+  chain.forEach(t => { t.el.classList.add('pop'); grid[t.r][t.c] = null; });
+  const popped = chain.slice();
+  chain = []; chainVal = null; drawChainLine();
+  setTimeout(() => {
+    popped.forEach(t => t.el.remove());
+    gravity();
+    setTimeout(() => {
+      locked = false;
+      if (roundScore >= roundCfg().target){ roundClear(); return; }
+      if (!fever && gauge >= GAUGE_MAX) startFever();
+      ensureMoves(false);
+    }, 270);
+  }, 230);
+}
+function gravity(){
+  for (let c=0; c<N; c++){
+    const colTiles = [];
+    for (let r=N-1; r>=0; r--) if (grid[r][c]) colTiles.push(grid[r][c]);
+    let r = N-1;
+    colTiles.forEach(t => { grid[r][c] = t; t.r = r; t.el.style.top = posY(r)+'px'; r--; });
+    const missing = r + 1;
+    for (let i=r; i>=0; i--){
+      const t = makeTile(i, c, missing);
+      grid[i][c] = t;
+    }
+  }
+}
+
+/* ---------- unit circle ---------- */
+function sweepTo(t){
+  if (t.expr.deg === null) return;
+  $('sweep').style.transform = `rotate(${-t.expr.deg}deg)`;
+  const cap = $('caption');
+  cap.textContent = t.expr.fn ? `${t.expr.fn} ${t.expr.arg} = ${t.val}` : '';
+  cap.style.opacity = 1;
+  clearTimeout(cap._t); cap._t = setTimeout(()=>cap.style.opacity=.45, 1800);
+}
+function drawGauge(f){
+  $('gaugearc').style.strokeDashoffset = 182.2 * (1 - f);
+}
+
+/* ---------- fever ---------- */
+function startFever(){
+  fever = true; feverT = FEVER_LEN;
+  const posVals = [...new Set(roundPool().filter(e => !isNeg(e.val)).map(e => e.val))];
+  hot = posVals.sort(()=>Math.random()-.5).slice(0,4);
+  $('boardwrap').classList.add('fever');
+  say('피버! 점수 2배', 'warn');
+}
+function endFever(){
+  fever = false; gauge = 0; drawGauge(0);
+  $('boardwrap').classList.remove('fever');
+}
+
+/* ---------- status / timer ---------- */
+function say(msg, cls){ const s = $('status'); s.textContent = msg; s.className = cls || ''; }
+function tick(ts){
+  if (!playing) return;
+  if (prev){
+    const dt = (ts - prev)/1000;
+    time -= dt;
+    if (fever){ feverT -= dt; drawGauge(Math.max(feverT/FEVER_LEN, 0)); if (feverT <= 0) endFever(); }
+  }
+  prev = ts;
+  if (time <= 0){ time = 0; updateTimer(); gameOver(); return; }
+  updateTimer();
+  raf = requestAnimationFrame(tick);
+}
+function updateTimer(){
+  const f = $('timefill'), tn = $('timen');
+  f.style.width = (time/roundCfg().time*100)+'%';
+  const cls = time <= 5 ? 'crit' : time <= 12 ? 'low' : '';
+  f.className = cls; tn.className = cls;
+  tn.textContent = time.toFixed(1);
+}
+
+/* ---------- flow ---------- */
+function drawTarget(){
+  const cfg = roundCfg();
+  $('targetfill').style.width = Math.min(roundScore/cfg.target*100, 100) + '%';
+  $('targetlbl').textContent = '목표 ' + cfg.target;
+}
+function startRound(){
+  const cfg = roundCfg();
+  roundScore = 0; time = cfg.time; locked = false; chain = []; chainVal = null;
+  $('roundlbl').textContent = '라운드 ' + (roundIdx+1);
+  drawTarget(); buildBoard(); drawChainLine(); updateTimer();
+  say(`라운드 ${roundIdx+1} — ${cfg.intro}`);
+  $('veil').hidden = true;
+  playing = true; prev = 0; raf = requestAnimationFrame(tick);
+}
+function roundClear(){
+  playing = false; dragging = false; cancelAnimationFrame(raf);
+  clearChain();
+  const bonus = Math.ceil(time) * 10;
+  score += bonus; $('score').textContent = score;
+  $('rtitle').textContent = `라운드 ${roundIdx+1} 클리어`;
+  roundIdx++;
+  const next = roundCfg();
+  $('rbonus').textContent = '+' + bonus;
+  $('rnext').innerHTML = `남은 시간 보너스<br><br>다음 — <b>${next.intro}</b><br>${next.detail}<br>목표 ${next.target}점 · ${next.time}초`;
+  $('startcard').hidden = true; $('overcard').hidden = true; $('roundcard').hidden = false;
+  $('veil').hidden = false;
+}
+function startGame(){
+  score = 0; pops = 0; longest = 0; gauge = 0; roundIdx = 0;
+  fever = false; feverT = 0; hot = [];
+  $('score').textContent = '0'; drawGauge(0); $('boardwrap').classList.remove('fever');
+  $('caption').textContent = '';
+  $('overcard').hidden = true; $('roundcard').hidden = true;
+  startRound();
+}
+function gameOver(){
+  playing = false; dragging = false; cancelAnimationFrame(raf);
+  clearChain();
+  best = Math.max(best, score);
+  $('finalscore').textContent = score;
+  $('finalsub').innerHTML = `라운드 ${roundIdx+1}에서 종료 · 최고 기록 ${best}<br>팡 ${pops}회 · 최장 사슬 ${longest}개`;
+  $('startcard').hidden = true; $('roundcard').hidden = true; $('overcard').hidden = false;
+  $('veil').hidden = false;
+}
+$('startbtn').addEventListener('click', startGame);
+$('retrybtn').addEventListener('click', startGame);
+$('nextbtn').addEventListener('click', () => { $('roundcard').hidden = true; startRound(); });
+$('shuffle').addEventListener('click', () => {
+  if (!playing || locked) return;
+  dragging = false; clearChain();
+  time = Math.max(time - 2, 0.1);
+  const vals = [];
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++) vals.push(grid[r][c].expr);
+  for (let i=vals.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [vals[i],vals[j]]=[vals[j],vals[i]]; }
+  let k=0;
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+    const t = grid[r][c], e = vals[k++];
+    t.expr = e; t.val = e.val;
+    t.el.innerHTML = e.fn ? `<span class="fn ${e.fn}">${e.fn}</span><b>${e.arg}</b>` : `<b class="num">${e.arg}</b>`;
+  }
+  ensureMoves(true);
+  say('보드 섞음 −2초', 'warn');
+});
+
+window.addEventListener('resize', () => {
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+    const t = grid[r]?.[c]; if (!t) continue;
+    t.el.style.left = posX(c)+'px'; t.el.style.top = posY(r)+'px';
+  }
+  drawChainLine();
+});
+
+buildBoard();
+})();
+</script>
+</body>
+</html>
